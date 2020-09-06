@@ -331,9 +331,9 @@ class HassleResolver {
   }
 
   resetInputs() {
-    document.getElementById('hassle-0-fist-count').value = 0;
-    document.getElementById('hassle-0-difficulty').value = 1;
-    document.getElementById('hassle-0-toughness').value = 1;
+    document.getElementById('hassle-' + this.hassleNum +'-fist-count').value = 0;
+    document.getElementById('hassle-' + this.hassleNum +'-difficulty').value = 1;
+    document.getElementById('hassle-' + this.hassleNum +'-toughness').value = 1;
     this.hassleNum = 0;
     this.setEffort(0);
     this.setToughness(1);
@@ -379,11 +379,11 @@ class HassleResolver {
   }
 
   getToughness() {
-    return parseInt(document.getElementById('hassle-0-toughness').value);
+    return parseInt(document.getElementById('hassle-' + this.hassleNum +'-toughness').value);
   }
 
   setToughness(value) {
-    document.getElementById('hassle-0-toughness').value = value;
+    document.getElementById('hassle-' + this.hassleNum +'-toughness').value = value;
   }
 
   getIsMultipleHassle() {
