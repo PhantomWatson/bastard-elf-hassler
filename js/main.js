@@ -19,8 +19,21 @@ class HassleResolver {
       self.handleReset();
     });
 
-    $('#modal').on('hidden.bs.modal', function () {
+    const modal = $('#modal');
+    modal.on('hidden.bs.modal', function () {
       self.setEffort(0);
+    });
+    modal.on('shown.bs.modal', function () {
+      document.getElementById('modal-close').focus();
+    });
+    document.getElementById('modal-close').addEventListener('click', function () {
+      const submit = document.getElementById('submit');
+      const reset = document.getElementById('reset');
+      if (submit.style.display !== 'none') {
+        submit.focus();
+      } else {
+        reset.focus();
+      }
     });
 
     document.getElementById('add-hassle').addEventListener('click', function () {
@@ -29,6 +42,7 @@ class HassleResolver {
 
     this.elfDiceContainer = document.getElementById('elf-dice-container');
     this.hassleDiceContainer = document.getElementById('hassle-dice-container');
+    document.getElementById('effort-spent').focus();
   }
 
   handleFormSubmit() {
@@ -328,6 +342,7 @@ class HassleResolver {
     Array.from(hasslesToRemove).forEach(function (hassle) {
       hassle.remove()
     });
+    document.getElementById('effort-spent').focus();
   }
 
   handleReset() {
