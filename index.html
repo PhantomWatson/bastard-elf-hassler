@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Sword of the Bastard Elf Hassle Resolver</title>
+  <!-- meta name="description" content="" -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <meta property="og:title" content="Sword of the Bastard Elf Hassle Resolver" />
+  <meta property="og:type" content="website" />
+  <!-- meta property="og:url" content="" -->
+  <!-- meta property="og:image" content="" -->
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+  <link rel="stylesheet" href="css/normalize.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="fontawesome-5.14.0/css/all.min.css" />
+  <link rel="shortcut icon" href="favicon.ico" />
+
+  <meta name="theme-color" content="#fafafa" />
+</head>
+
+<body>
+  <nav class="navbar fixed-top navbar-light bg-light">
+    <span class="navbar-brand d-none d-sm-block d-md-block d-lg-block d-xl-block">
+      Sword of the Bastard Elf Hassle Resolver
+    </span>
+    <span class="navbar-brand d-block d-sm-none">
+      <abbr title="Sword of the Bastard Elf">SotBE</abbr> Hassle Resolver
+    </span>
+    <span id="round-header">
+      Round 1
+    </span>
+  </nav>
+  <div class="container">
+    <form id="form">
+      <div class="row">
+        <section class="card col-sm-6">
+          <div class="card-body">
+            <h2 class="card-title">
+              The Bastard Elf
+            </h2>
+            <div class="form-group form-check">
+              <input class="form-check-input" type="checkbox" value="1" id="rather-win" checked="checked">
+              <label class="form-check-label" for="rather-win">
+                I'm trying to win this fight
+              </label>
+            </div>
+            <div class="row">
+              <div class="form-group col-6">
+                <label for="effort-spent">
+                  Effort to Spend
+                </label>
+                <input type="number" class="form-control" id="effort-spent" aria-describedby="effort-spent-help" min="0" value="0" />
+                <small class="form-text text-muted">
+                  Maximum is current &eacute;lan
+                </small>
+              </div>
+              <div class="form-group col-6">
+                <label for="elf-fist-count">
+                  Fists
+                </label>
+                <input type="number" class="form-control" id="elf-fist-count" value="1" min="1" />
+              </div>
+            </div>
+            <div id="elf-dice-container" class="dice-container"></div>
+          </div>
+        </section>
+
+        <section class="card col-sm-6" id="hassle-section">
+          <div class="card-body">
+            <h2 class="card-title">
+              The Hassle
+            </h2>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="multiple-hassle" value="1">
+              <label class="form-check-label" for="multiple-hassle">
+                This is a multiple hassle
+              </label>
+              <small class="form-text text-muted multiple-only" id="multiple-hassle-notes">
+                Any of the Elf's dice that land on 4+ will be <span class="rerolled">re-rolled</span>,
+                and losing may result in multiple <strong>consequences</strong>. Add hassles in the order you
+                want to fight them.
+              </small>
+            </div>
+            <div id="hassle-set">
+              <div class="hassle" data-hassle-key="0">
+                <div class="row">
+                  <div class="form-group col-4">
+                    <label for="hassle-0-difficulty">
+                      Difficulty
+                    </label>
+                    <input type="number" class="form-control hassle-difficulty" id="hassle-0-difficulty" value="1" min="1" />
+                  </div>
+                  <div class="form-group col-4">
+                    <label for="hassle-0-fist-count">
+                      Fists
+                    </label>
+                    <input type="number" class="form-control hassle-fists" id="hassle-0-fist-count" value="0" min="0" />
+                    <small class="form-text text-muted note">
+                      Default: 0
+                    </small>
+                  </div>
+                  <div class="form-group col-4">
+                    <label for="hassle-0-toughness">Toughness</label>
+                    <input type="number" class="form-control hassle-toughness" id="hassle-0-toughness" min="1" value="1" />
+                    <small class="form-text text-muted note">
+                      Default: 1
+                    </small>
+                  </div>
+                </div>
+                <div class="form-group row multiple-only">
+                  <label for="hassle-0-name" class="col-4 col-form-label text-right">
+                    Hassle name
+                  </label>
+                  <div class="col-8">
+                    <input type="text" class="form-control" id="hassle-0-name" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-sm btn-secondary float-right multiple-only" id="add-hassle" type="button">
+              Add Hassle
+            </button>
+
+            <div id="hassle-dice-container" class="dice-container"></div>
+          </div>
+        </section>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="submit">
+        Roll
+      </button>
+      <button type="reset" class="btn btn-secondary" id="reset">
+        Reset
+      </button>
+    </form>
+  </div>
+
+  <div class="modal fade" id="modal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            <span id="modal-round">Round 1</span> Results
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/vendor/modernizr-3.11.2.min.js"></script>
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+
+  <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID.
+  <script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-XXXXX-Y', 'auto'); ga('set', 'anonymizeIp', true); ga('set', 'transport', 'beacon'); ga('send', 'pageview')
+  </script>
+  <script src="https://www.google-analytics.com/analytics.js" async></script -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      new HassleResolver();
+    });
+  </script>
+</body>
+
+</html>

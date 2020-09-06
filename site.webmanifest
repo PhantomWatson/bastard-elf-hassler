@@ -1,0 +1,12 @@
+{
+  "short_name": "SOTBE Hassle Resolver",
+  "name": "Sword of the Bastard Elf Hassle Resolver",
+  "icons": [{
+    "src": "icon.png",
+    "type": "image/png",
+    "sizes": "152x152"
+  }],
+  "start_url": "/",
+  "background_color": "#fafafa",
+  "theme_color": "#fafafa"
+}
