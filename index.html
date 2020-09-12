@@ -64,7 +64,7 @@
                 <input type="number" class="form-control" id="elf-fist-count" value="1" min="1" />
               </div>
             </div>
-            <div id="elf-dice-container" class="dice-container"></div>
+            <div id="former-elf-dice-container" class="dice-container"></div>
           </div>
         </section>
 
@@ -129,7 +129,7 @@
               Add Hassle
             </button>
 
-            <div id="hassle-dice-container" class="dice-container"></div>
+            <div id="former-hassle-dice-container" class="dice-container"></div>
           </div>
         </section>
       </div>
@@ -154,7 +154,13 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" id="modal-body"></div>
+        <div class="modal-body" id="modal-body">
+          <div id="elf-dice-container" class="dice-container"></div>
+          <div id="elf-roll-results"></div>
+          <div id="hassle-dice-container" class="dice-container"></div>
+          <div id="hassle-roll-results" class="dice-container"></div>
+          <div id="roll-summary"></div>
+        </div>
         <div class="modal-footer">
           <button type="reset" class="btn btn-secondary reset-btn" data-dismiss="modal">
             Reset

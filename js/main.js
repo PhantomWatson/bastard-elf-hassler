@@ -243,49 +243,48 @@ class HassleResolver {
     return winningValue;
   }
 
-  displayMessage(msg) {
-    document.getElementById('modal-body').innerHTML = msg;
+  displayMessage() {
     $('#modal').modal();
   }
 
   showSingleHassleResults() {
-    let msg = this.getRoundWinMessage();
-    this.displayMessage(msg);
+    this.setRoundWinMessage();
+    this.displayMessage();
   }
 
-  getRoundWinMessage() {
-    let msg;
+  setRoundWinMessage() {
+    const elfRollResults = document.getElementById('elf-roll-results');
+    const hassleRollResults = document.getElementById('hassle-roll-results');
+    const rollSummary = document.getElementById('roll-summary');
     let win = this.elfTotal > this.hassleTotal;
     if (this.getToughness() > 0) {
-      msg = `Elf total: ${this.elfTotal}`;
-      msg += `<br \>Hassle total: ${this.hassleTotal}`;
-      msg += '<br /><strong>' + (win ? 'You win!' : 'You lose and suffer this hassle\'s consequences (if any).');
+      elfRollResults.innerHTML = `Elf total: ${this.elfTotal}`;
+      hassleRollResults.innerHTML = `Hassle total: ${this.hassleTotal}`;
+      rollSummary.innerHTML = (win ? 'You win!' : 'You lose and suffer this hassle\'s consequences (if any).');
       if (win) {
-        msg += '<br />Hassle toughness reduced to ' + this.getToughness();
+        rollSummary.innerHTML += '<br />Hassle toughness reduced to ' + this.getToughness();
       }
-      msg += '</strong>';
     } else {
-      msg = `Elf total: ${this.elfTotal}`;
-      msg += `<br \>Hassle total: ${this.hassleTotal}`;
-      msg += '<br /><strong>Hassle defeated!</strong>';
+      elfRollResults.innerHTML = `Elf total: ${this.elfTotal}`;
+      hassleRollResults.innerHTML = `Hassle total: ${this.hassleTotal}`;
+      rollSummary.innerHTML = 'Hassle defeated!';
     }
-
-    return msg;
   }
 
   showMultipleHassleResults() {
-    let msg = this.getRoundWinMessage();
+    this.setRoundWinMessage();
     const hassleCount = this.getHassleCount();
+    const rollSummary = document.getElementById('roll-summary');
     if (this.getToughness() === 0) {
       if (hassleCount > 1) {
         let moreHassles = hassleCount - 1;
-        msg += `<br /><strong>${moreHassles} more ${moreHassles === 1 ? 'hassle is' : 'hassles are'} left.</strong>`;
+        rollSummary.innerHTML += `<br />${moreHassles} more ${moreHassles === 1 ? 'hassle is' : 'hassles are'} left.`;
       } else {
         this.setModalResetMode(true);
-        msg += '<br /><strong>No hassles remain.</strong>'
+        rollSummary.innerHTML += '<br />No hassles remain.'
       }
     }
-    this.displayMessage(msg);
+    this.displayMessage();
   }
 
   reduceToughness() {
