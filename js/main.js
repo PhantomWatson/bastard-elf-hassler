@@ -43,6 +43,17 @@ class HassleResolver {
     this.elfDiceContainer = document.getElementById('elf-dice-container');
     this.hassleDiceContainer = document.getElementById('hassle-dice-container');
     document.getElementById('effort-spent').focus();
+
+    const removeButton = document.getElementById('remove-hassle');
+    removeButton.addEventListener('click', function (event) {
+      event.preventDefault();
+      const container = document.getElementById('hassle-set');
+      const lastHassle = container.querySelector('.hassle:last-child');
+      lastHassle.parentNode.removeChild(lastHassle);
+      if (self.getHassleCount() === 1) {
+        removeButton.style.display = 'none';
+      }
+    });
   }
 
   handleFormSubmit() {
@@ -406,6 +417,7 @@ class HassleResolver {
     fists.id = 'hassle-' + newHassle.dataset.hassleKey + '-fist-count';
     toughness.id = 'hassle-' + newHassle.dataset.hassleKey + '-toughness';
     hassleContainer.appendChild(newHassle);
+    document.getElementById('remove-hassle').style.display = 'inline-block';
   }
 
   handleToggleMultiple(checkbox) {

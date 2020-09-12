@@ -327,3 +327,7 @@ body {
 .hassle:first-child .note {
   display: inline;
 }
+
+#remove-hassle {
+  display: none;
+}
