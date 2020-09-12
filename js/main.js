@@ -130,7 +130,7 @@ class HassleResolver {
     return die;
   }
 
-  rollHassleDice(hassleNum) {
+  rollHassleDice() {
     let die;
     for (let n = 0; n < this.hassles[0].fists; n++) {
       die = this.getRandomDie();
