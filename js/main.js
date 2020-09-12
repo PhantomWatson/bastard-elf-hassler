@@ -278,7 +278,7 @@ class HassleResolver {
     if (this.getToughness() === 0) {
       if (hassleCount > 1) {
         let moreHassles = hassleCount - 1;
-        msg += `<br /><strong>${moreHassles} more ${moreHassles === 1 ? 'hassle' : 'hassles'} are left.</strong>`;
+        msg += `<br /><strong>${moreHassles} more ${moreHassles === 1 ? 'hassle is' : 'hassles are'} left.</strong>`;
       } else {
         msg += '<br /><strong>No hassles remain.</strong>'
       }
