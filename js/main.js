@@ -47,9 +47,7 @@ class HassleResolver {
     const removeButton = document.getElementById('remove-hassle');
     removeButton.addEventListener('click', function (event) {
       event.preventDefault();
-      const container = document.getElementById('hassle-set');
-      const lastHassle = container.querySelector('.hassle:last-child');
-      lastHassle.parentNode.removeChild(lastHassle);
+      self.removeHassle('last');
       if (self.getHassleCount() === 1) {
         removeButton.style.display = 'none';
       }
@@ -293,12 +291,17 @@ class HassleResolver {
 
   handleMultipleHassleWin() {
     this.reduceToughness();
+    this.showMultipleHassleResults();
     if (this.getToughness() > 0) {
       this.advanceRoundOnModalClose();
     } else {
-      this.hideSubmitButton();
+      if (this.getHassleCount() > 1) {
+        this.removeHassle('first');
+        this.hassleNum++;
+      } else {
+        this.hideSubmitButton();
+      }
     }
-    this.showMultipleHassleResults();
   }
 
   handleMultipleHassleLoss() {
@@ -427,5 +430,14 @@ class HassleResolver {
     } else {
       hassleSection.classList.remove('is-multiple');
     }
+  }
+
+  /**
+   * @param selector Either first or last
+   */
+  removeHassle(selector) {
+    const container = document.getElementById('hassle-set');
+    const firstHassle = container.querySelector('.hassle:' + selector + '-child');
+    firstHassle.parentNode.removeChild(firstHassle);
   }
 }
