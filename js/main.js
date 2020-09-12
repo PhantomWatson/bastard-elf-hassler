@@ -268,6 +268,7 @@ class HassleResolver {
       elfRollResults.innerHTML = `Elf total: ${this.elfTotal}`;
       hassleRollResults.innerHTML = `Hassle total: ${this.hassleTotal}`;
       rollSummary.innerHTML = 'Hassle defeated!';
+      this.setModalResetMode(true);
     }
   }
 
@@ -321,7 +322,9 @@ class HassleResolver {
     this.reduceToughness();
     this.showSingleHassleResults();
     this.advanceRoundOnModalClose();
-    this.hideSubmitButton();
+    if (this.getToughness() === 0) {
+      this.hideSubmitButton();
+    }
   }
 
   advanceRound() {
