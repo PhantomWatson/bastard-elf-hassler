@@ -438,10 +438,12 @@ class HassleResolver {
     const difficulty = newHassle.querySelector('.hassle-difficulty');
     const fists = newHassle.querySelector('.hassle-fists');
     const toughness = newHassle.querySelector('.hassle-toughness');
+    const name = newHassle.querySelector('.hassle-name');
     newHassle.dataset.hassleKey++;
     difficulty.id = 'hassle-' + newHassle.dataset.hassleKey + '-difficulty';
     fists.id = 'hassle-' + newHassle.dataset.hassleKey + '-fist-count';
     toughness.id = 'hassle-' + newHassle.dataset.hassleKey + '-toughness';
+    name.id = 'hassle-' + newHassle.dataset.hassleKey + '-name';
     hassleContainer.appendChild(newHassle);
   }
 
