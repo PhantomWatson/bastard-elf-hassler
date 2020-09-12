@@ -14,9 +14,10 @@ class HassleResolver {
       self.handleToggleMultiple(this);
     });
 
-    const resetButton = document.getElementById('reset');
-    resetButton.addEventListener('click', function (event) {
-      self.handleReset();
+    document.querySelectorAll('button.reset-btn').forEach(function (button) {
+      button.addEventListener('click', function () {
+        self.handleReset();
+      });
     });
 
     const modal = $('#modal');
@@ -28,7 +29,7 @@ class HassleResolver {
     });
     document.getElementById('modal-close').addEventListener('click', function () {
       const submit = document.getElementById('submit');
-      const reset = document.getElementById('reset');
+      const reset = document.querySelector('#form button.reset-btn');
       if (submit.style.display !== 'none') {
         submit.focus();
       } else {
@@ -37,7 +38,9 @@ class HassleResolver {
     });
 
     document.getElementById('add-hassle').addEventListener('click', function () {
-      self.handleAddHassle();
+      const lastHassle = document.querySelector('#hassle-set > .hassle:last-child');
+      const hassleKey = lastHassle.dataset.hassleKey;
+      self.handleAddHassle(hassleKey + 1);
     })
 
     this.elfDiceContainer = document.getElementById('elf-dice-container');
@@ -77,7 +80,7 @@ class HassleResolver {
         this.handleSingleHassleLoss();
       }
     }
-    this.showResetButton();
+    this.showFormResetButton();
   }
 
   readInput() {
@@ -278,6 +281,7 @@ class HassleResolver {
         let moreHassles = hassleCount - 1;
         msg += `<br /><strong>${moreHassles} more ${moreHassles === 1 ? 'hassle is' : 'hassles are'} left.</strong>`;
       } else {
+        this.setModalResetMode(true);
         msg += '<br /><strong>No hassles remain.</strong>'
       }
     }
@@ -336,8 +340,8 @@ class HassleResolver {
     document.getElementById('modal-round').innerHTML = 'Round ' + this.round;
   }
 
-  showResetButton() {
-    document.getElementById('reset').style.display = 'inline';
+  showFormResetButton() {
+    document.querySelector('#form button.reset-btn').style.display = 'inline';
   }
 
   hideSubmitButton() {
@@ -345,17 +349,22 @@ class HassleResolver {
   }
 
   resetInputs() {
+    this.addHassle(this.hassleNum);
+
+    // Reset inputs
     document.getElementById('hassle-' + this.hassleNum +'-fist-count').value = 0;
     document.getElementById('hassle-' + this.hassleNum +'-difficulty').value = 1;
-    document.getElementById('hassle-' + this.hassleNum +'-toughness').value = 1;
-    this.hassleNum = 0;
     this.setEffort(0);
     this.setToughness(1);
     this.setIsMultipleHassle(false);
+
+    // Remove hassles
     const hasslesToRemove = document.querySelectorAll('#hassle-set .hassle:not(:first-child)');
     Array.from(hasslesToRemove).forEach(function (hassle) {
       hassle.remove()
     });
+
+    // Focus on effort input
     document.getElementById('effort-spent').focus();
   }
 
@@ -364,8 +373,9 @@ class HassleResolver {
     this.updateRoundDisplay();
     this.clearDice();
     this.resetInputs();
+    this.setModalResetMode(false);
     document.getElementById('submit').style.display = 'inline';
-    document.getElementById('reset').style.display = 'none';
+    document.querySelector('#form button.reset-btn').style.display = 'none';
   }
 
   advanceRoundOnModalClose() {
@@ -408,7 +418,20 @@ class HassleResolver {
     document.getElementById('multiple-hassle').checked = value;
   }
 
-  handleAddHassle() {
+  /**
+   * Manages the result of clicking on 'add hassle' when one or more hassles are already on the screen
+   *
+   * @param hassleKey
+   */
+  handleAddHassle(hassleKey) {
+    this.addHassle(hassleKey);
+    document.getElementById('remove-hassle').style.display = 'inline-block';
+  }
+
+  /**
+   * Inserts a hassle into the queue. Also used in resetting hassle inputs
+   */
+  addHassle() {
     const lastHassle = document.querySelector('#hassle-set > .hassle:last-child');
     const hassleContainer = document.getElementById('hassle-set');
     const newHassle = lastHassle.cloneNode(true);
@@ -420,13 +443,12 @@ class HassleResolver {
     fists.id = 'hassle-' + newHassle.dataset.hassleKey + '-fist-count';
     toughness.id = 'hassle-' + newHassle.dataset.hassleKey + '-toughness';
     hassleContainer.appendChild(newHassle);
-    document.getElementById('remove-hassle').style.display = 'inline-block';
   }
 
   handleToggleMultiple(checkbox) {
     const hassleSection = document.getElementById('hassle-section');
     if (checkbox.checked) {
-      hassleSection.classList.add('is-multiple');
+     hassleSection.classList.add('is-multiple');
     } else {
       hassleSection.classList.remove('is-multiple');
     }
@@ -439,5 +461,12 @@ class HassleResolver {
     const container = document.getElementById('hassle-set');
     const firstHassle = container.querySelector('.hassle:' + selector + '-child');
     firstHassle.parentNode.removeChild(firstHassle);
+  }
+
+  setModalResetMode(isInResetMode) {
+    const resetBtn = document.querySelector('#modal button.reset-btn');
+    const closeBtn = document.getElementById('modal-close');
+    resetBtn.style.display = isInResetMode ? 'inline-block' : 'none';
+    closeBtn.style.display = isInResetMode ? 'none' : 'inline-block';
   }
 }
