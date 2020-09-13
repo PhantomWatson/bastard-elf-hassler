@@ -114,7 +114,7 @@ class HassleResolver {
     const numberWord = number[0];
     const numberDigit = number[1];
     const die = document.createElement('i');
-    die.className = 'fas fa-dice-' + numberWord;
+    die.className = `fas fa-dice-${numberWord}`;
     die.setAttribute('data-value', numberDigit);
     return die;
   }
@@ -149,9 +149,9 @@ class HassleResolver {
 
   getCurrentHassle() {
     return {
-      fists: parseInt(document.getElementById('hassle-' + this.hassleNum + '-fist-count').value),
-      difficulty: parseInt(document.getElementById('hassle-' + this.hassleNum + '-difficulty').value),
-      toughness: parseInt(document.getElementById('hassle-' + this.hassleNum + '-toughness').value),
+      fists: parseInt(document.getElementById(`hassle-${this.hassleNum}-fist-count`).value),
+      difficulty: parseInt(document.getElementById(`hassle-${this.hassleNum}-difficulty`).value),
+      toughness: parseInt(document.getElementById(`hassle-${this.hassleNum}-toughness`).value),
     }
   }
 
@@ -249,21 +249,18 @@ class HassleResolver {
     const rollSummary = document.getElementById('roll-summary');
     let win = this.elfTotal > this.hassleTotal;
     const hassleName = this.getHassleName(this.hassleNum);
+    elfRollResults.innerHTML = `Elf total: ${this.elfTotal}`;
+    hassleRollResults.innerHTML = `Hassle total: ${this.hassleTotal}`;
     if (this.getToughness() > 0) {
-      elfRollResults.innerHTML = `Elf total: ${this.elfTotal}`;
-      hassleRollResults.innerHTML = `Hassle total: ${this.hassleTotal}`;
       rollSummary.innerHTML = (
         win ?
-          '<span class="text-success">You win against against ' + hassleName + '!</span>' :
-          '<span class="text-danger">You lose against ' + hassleName + ' this round and suffer any resulting consequences.</span>'
+          `<span class="text-success">You win against against ${hassleName}!</span>` :
+          `<span class="text-danger">You lose against ${hassleName} this round and suffer any resulting consequences.</span>`
       );
       if (win) {
-        rollSummary.innerHTML += '<br />The toughness of ' + hassleName + ' has been reduced to ' + this.getToughness();
+        rollSummary.innerHTML += `<br />The toughness of ${hassleName} has been reduced to ${this.getToughness()}`;
       }
     } else {
-      elfRollResults.innerHTML = `Elf total: ${this.elfTotal}`;
-      hassleRollResults.innerHTML = `Hassle total: ${this.hassleTotal}`;
-
       rollSummary.innerHTML = `<span class="text-success">You've defeated ${hassleName}</span>`;
       if (this.getHassleCount() === 1) {
         this.setModalResetMode(true);
@@ -340,8 +337,8 @@ class HassleResolver {
   }
 
   updateRoundDisplay() {
-    document.getElementById('round-header').innerHTML = 'Round ' + this.round;
-    document.getElementById('modal-round').innerHTML = 'Round ' + this.round;
+    document.getElementById('round-header').innerHTML = `Round ${this.round}`;
+    document.getElementById('modal-round').innerHTML = `Round ${this.round}`;
   }
 
   showFormResetButton() {
@@ -356,9 +353,9 @@ class HassleResolver {
     this.addHassle(this.hassleNum);
 
     // Reset inputs
-    document.getElementById('hassle-' + this.hassleNum +'-fist-count').value = 0;
-    document.getElementById('hassle-' + this.hassleNum +'-difficulty').value = 1;
-    document.getElementById('hassle-' + this.hassleNum +'-name').value = '';
+    document.getElementById(`hassle-${this.hassleNum}-fist-count`).value = 0;
+    document.getElementById(`hassle-${this.hassleNum}-difficulty`).value = 1;
+    document.getElementById(`hassle-${this.hassleNum}-name`).value = '';
     this.setEffort(0);
     this.setToughness(1);
     this.setIsMultipleHassle(false);
@@ -408,11 +405,11 @@ class HassleResolver {
   }
 
   getToughness() {
-    return parseInt(document.getElementById('hassle-' + this.hassleNum +'-toughness').value);
+    return parseInt(document.getElementById(`hassle-${this.hassleNum}-toughness`).value);
   }
 
   setToughness(value) {
-    document.getElementById('hassle-' + this.hassleNum +'-toughness').value = value;
+    document.getElementById(`hassle-${this.hassleNum}-toughness`).value = value;
   }
 
   getIsMultipleHassle() {
@@ -447,10 +444,10 @@ class HassleResolver {
     const toughness = newHassle.querySelector('.hassle-toughness');
     const name = newHassle.querySelector('.hassle-name');
     newHassle.dataset.hassleKey++;
-    difficulty.id = 'hassle-' + newHassle.dataset.hassleKey + '-difficulty';
-    fists.id = 'hassle-' + newHassle.dataset.hassleKey + '-fist-count';
-    toughness.id = 'hassle-' + newHassle.dataset.hassleKey + '-toughness';
-    name.id = 'hassle-' + newHassle.dataset.hassleKey + '-name';
+    difficulty.id = `hassle-${newHassle.dataset.hassleKey}-difficulty`;
+    fists.id = `hassle-${newHassle.dataset.hassleKey}-fist-count`;
+    toughness.id = `hassle-${newHassle.dataset.hassleKey}-toughness`;
+    name.id = `hassle-${newHassle.dataset.hassleKey}-name`;
     hassleContainer.appendChild(newHassle);
   }
 
@@ -468,7 +465,7 @@ class HassleResolver {
    */
   removeHassle(selector) {
     const container = document.getElementById('hassle-set');
-    const firstHassle = container.querySelector('.hassle:' + selector + '-child');
+    const firstHassle = container.querySelector(`.hassle:${selector}-child`);
     firstHassle.parentNode.removeChild(firstHassle);
 
     // If a multiple hassle is reduced from > 1 hassles to 1 hassle, it becomes a non-multiple hassle
@@ -519,8 +516,8 @@ class HassleResolver {
       win = self.elfTotal > otherHassleTotal;
       hassleName = self.getHassleName(otherHassleKey);
       summary.innerHTML = win ?
-        '<span class="text-success">' + hassleName + ' tries to attack you and fails.</span>' :
-        '<span class="text-danger">' + hassleName + ' successfully attacks you!</span>';
+        `<span class="text-success">${hassleName} tries to attack you and fails.</span>` :
+        `<span class="text-danger">${hassleName} successfully attacks you!</span>`;
     });
 
     // Remove the extra elements upon modal close
@@ -536,7 +533,7 @@ class HassleResolver {
   getHassleName(hassleKey) {
     const field = document.getElementById(`hassle-${hassleKey}-name`)
     if (field.value === '') {
-      return 'Hassle #' + hassleKey;
+      return `Hassle #${hassleKey}`;
     }
 
     return field.value;
