@@ -303,7 +303,7 @@ class HassleResolver {
   handleMultipleHassleLoss() {
     this.advanceRoundOnModalClose();
     this.showMultipleHassleResults();
-    if (this.getHassleCount() === 1) {
+    if (this.getHassleCount() > 1) {
       this.handleAmbushes();
     }
   }
