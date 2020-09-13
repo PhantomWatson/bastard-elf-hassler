@@ -246,7 +246,11 @@ class HassleResolver {
     if (this.getToughness() > 0) {
       elfRollResults.innerHTML = `Elf total: ${this.elfTotal}`;
       hassleRollResults.innerHTML = `Hassle total: ${this.hassleTotal}`;
-      rollSummary.innerHTML = (win ? '<span class="text-success">You win!</span>' : '<span class="text-danger">You lose and suffer this hassle\'s consequences (if any).</span>');
+      rollSummary.innerHTML = (
+        win ?
+          '<span class="text-success">You win!</span>' :
+          '<span class="text-danger">You lose and suffer this hassle\'s consequences (if any).</span>'
+      );
       if (win) {
         rollSummary.innerHTML += '<br />Hassle toughness reduced to ' + this.getToughness();
       }
