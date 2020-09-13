@@ -248,21 +248,23 @@ class HassleResolver {
     const hassleRollResults = document.getElementById('hassle-roll-results');
     const rollSummary = document.getElementById('roll-summary');
     let win = this.elfTotal > this.hassleTotal;
+    const hassleName = this.getHassleName(this.hassleNum);
     if (this.getToughness() > 0) {
       elfRollResults.innerHTML = `Elf total: ${this.elfTotal}`;
       hassleRollResults.innerHTML = `Hassle total: ${this.hassleTotal}`;
       rollSummary.innerHTML = (
         win ?
-          '<span class="text-success">You win!</span>' :
-          '<span class="text-danger">You lose and suffer this hassle\'s consequences (if any).</span>'
+          '<span class="text-success">You win against against ' + hassleName + '!</span>' :
+          '<span class="text-danger">You lose against ' + hassleName + ' this round and suffer any resulting consequences.</span>'
       );
       if (win) {
-        rollSummary.innerHTML += '<br />Hassle toughness reduced to ' + this.getToughness();
+        rollSummary.innerHTML += '<br />The toughness of ' + hassleName + ' has been reduced to ' + this.getToughness();
       }
     } else {
       elfRollResults.innerHTML = `Elf total: ${this.elfTotal}`;
       hassleRollResults.innerHTML = `Hassle total: ${this.hassleTotal}`;
-      rollSummary.innerHTML = '<span class="text-success">Hassle defeated!</span>';
+
+      rollSummary.innerHTML = `<span class="text-success">You've defeated ${hassleName}</span>`;
       if (this.getHassleCount() === 1) {
         this.setModalResetMode(true);
       }
@@ -487,6 +489,7 @@ class HassleResolver {
     const self = this;
     let difficulty;
     let fists;
+    let hassleName;
     let otherHassleKey;
     let otherHassleTotal;
     let rollResults;
@@ -513,9 +516,10 @@ class HassleResolver {
 
       // Add summary message to the modal
       win = self.elfTotal > otherHassleTotal;
+      hassleName = self.getHassleName(otherHassleKey);
       summary.innerHTML = win ?
-        '<span class="text-success">The next hassle tries to attack you and fails.</span>' :
-        '<span class="text-danger">The next hassle successfully attacks you! You suffer any of its consequences.</span>';
+        '<span class="text-success">' + hassleName + ' tries to attack you and fails.</span>' :
+        '<span class="text-danger">' + hassleName + ' successfully attacks you!</span>';
     });
 
     // Remove the extra elements upon modal close
@@ -526,5 +530,14 @@ class HassleResolver {
         document.getElementById(`additional-hassle-${otherHassleKey}-results`).remove();
       });
     });
+  }
+
+  getHassleName(hassleKey) {
+    const field = document.getElementById(`hassle-${hassleKey}-name`)
+    if (field.value === '') {
+      return 'Hassle #' + hassleKey;
+    }
+
+    return field.value;
   }
 }
