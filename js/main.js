@@ -239,11 +239,11 @@ class HassleResolver {
   }
 
   showSingleHassleResults() {
-    this.setRoundWinMessage();
+    this.setRoundEndMessage();
     this.displayMessage();
   }
 
-  setRoundWinMessage() {
+  setRoundEndMessage() {
     const elfRollResults = document.getElementById('elf-roll-results');
     const hassleRollResults = document.getElementById('hassle-roll-results');
     const rollSummary = document.getElementById('roll-summary');
@@ -269,7 +269,7 @@ class HassleResolver {
   }
 
   showMultipleHassleResults() {
-    this.setRoundWinMessage();
+    this.setRoundEndMessage();
     const hassleCount = this.getHassleCount();
     const rollSummary = document.getElementById('roll-summary');
     if (this.getToughness() === 0) {
