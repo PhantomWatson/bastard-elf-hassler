@@ -22,7 +22,7 @@ class HassleResolver {
 
     const modal = $('#modal');
     modal.on('hidden.bs.modal', function () {
-      self.setEffort(0);
+      self.setEffortSpent(0);
     });
     modal.on('shown.bs.modal', function () {
       document.getElementById('modal-close').focus();
@@ -45,13 +45,28 @@ class HassleResolver {
 
     this.elfDiceContainer = document.getElementById('elf-dice-container');
     this.hassleDiceContainer = document.getElementById('hassle-dice-container');
-    document.getElementById('effort-spent').focus();
+    const effortSpentField = document.getElementById('effort-spent');
+    effortSpentField.addEventListener('input', function () {
+      const effortSelection = document.getElementById('effort-spent-selected');
+      effortSelection.innerText = effortSpentField.value;
+    });
+    effortSpentField.focus();
 
     const removeButton = document.getElementById('remove-hassle');
     removeButton.addEventListener('click', function (event) {
       event.preventDefault();
       self.removeHassle('last');
     });
+
+    const totalElan = document.getElementById('total-elan');
+    totalElan.addEventListener('change', function () {
+      self.updateMaxSpendableEffort();
+    });
+    const totalEffort = document.getElementById('total-effort');
+    totalEffort.addEventListener('change', function () {
+      self.updateMaxSpendableEffort();
+    });
+    this.updateMaxSpendableEffort();
   }
 
   handleFormSubmit() {
@@ -353,7 +368,7 @@ class HassleResolver {
     document.getElementById(`hassle-${this.hassleNum}-fist-count`).value = 0;
     document.getElementById(`hassle-${this.hassleNum}-difficulty`).value = 1;
     document.getElementById(`hassle-${this.hassleNum}-name`).value = '';
-    this.setEffort(0);
+    this.setEffortSpent(0);
     this.setToughness(1);
     this.setIsMultipleHassle(false);
 
@@ -389,8 +404,9 @@ class HassleResolver {
     return parseInt(document.getElementById('effort-spent').value);
   }
 
-  setEffort(value) {
+  setEffortSpent(value) {
     document.getElementById('effort-spent').value = value;
+    document.getElementById('effort-spent-selected').innerText = value;
   }
 
   getElfFists() {
@@ -539,5 +555,14 @@ class HassleResolver {
     }
 
     return field.value;
+  }
+
+  updateMaxSpendableEffort() {
+    const totalElan = document.getElementById('total-elan').value;
+    const totalEffort = document.getElementById('total-effort').value;
+    const lowest = Math.min(parseInt(totalElan), parseInt(totalEffort));
+    const effortSpent = document.getElementById('effort-spent');
+    document.getElementById('effort-spendable-max').innerText = '' + lowest;
+    effortSpent.max = lowest;
   }
 }
