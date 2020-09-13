@@ -59,13 +59,12 @@ class HassleResolver {
 
   handleFormSubmit() {
     this.clearDice();
-    this.readInput();
     if (!this.validate()) {
       return;
     }
     this.rollElfDice();
     this.getElfTotal();
-    this.rollHassleDice();
+    this.rollHassleDice(this.getCurrentHassle().fists);
     this.getHassleTotal();
     if (this.elfTotal > this.hassleTotal) {
       if (this.getIsMultipleHassle()) {
@@ -81,16 +80,6 @@ class HassleResolver {
       }
     }
     this.showFormResetButton();
-  }
-
-  readInput() {
-    this.hassles = [];
-    this.hassles.push(
-      {
-        fists: parseInt(document.getElementById('hassle-' + this.hassleNum + '-fist-count').value),
-        difficulty: parseInt(document.getElementById('hassle-' + this.hassleNum + '-difficulty').value)
-      }
-    );
   }
 
   validate() {
@@ -130,14 +119,11 @@ class HassleResolver {
     return die;
   }
 
-  rollHassleDice() {
+  rollHassleDice(fists) {
     let die;
-    for (let n = 0; n < this.hassles[0].fists; n++) {
+    for (let n = 0; n < fists; n++) {
       die = this.getRandomDie();
       this.hassleDiceContainer.appendChild(die);
-      if (this.getIsMultipleHassle()) {
-        //
-      }
     }
     this.getWinningHassleDie();
   }
