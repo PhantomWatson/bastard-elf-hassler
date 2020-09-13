@@ -358,6 +358,7 @@ class HassleResolver {
     // Reset inputs
     document.getElementById('hassle-' + this.hassleNum +'-fist-count').value = 0;
     document.getElementById('hassle-' + this.hassleNum +'-difficulty').value = 1;
+    document.getElementById('hassle-' + this.hassleNum +'-name').value = '';
     this.setEffort(0);
     this.setToughness(1);
     this.setIsMultipleHassle(false);
