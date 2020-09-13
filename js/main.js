@@ -304,49 +304,8 @@ class HassleResolver {
     this.advanceRoundOnModalClose();
     this.showMultipleHassleResults();
     if (this.getHassleCount() === 1) {
-      return;
+      this.handleAmbushes();
     }
-    const otherHassles = document.querySelectorAll('#hassle-set > .hassle:not(:first-child)');
-    let otherHassleKey;
-    let rollResults;
-    let summary;
-    let fists;
-    let difficulty;
-    const modalBody = document.getElementById('modal-body');
-    const self = this;
-    let otherHassleTotal;
-    let win;
-    otherHassles.forEach(function (hassle) {
-      otherHassleKey = hassle.dataset.hassleKey;
-      rollResults = document.createElement('div');
-      rollResults.id = `additional-hassle-${otherHassleKey}-results`;
-      rollResults.className = 'dice-container';
-      modalBody.appendChild(rollResults);
-      fists = document.getElementById(`hassle-${otherHassleKey}-fist-count`).value;
-      self.rollHassleDice(fists, rollResults);
-
-      summary = document.createElement('div');
-      summary.id = `additional-hassle-${otherHassleKey}-summary`;
-      summary.className = 'roll-summary'
-      modalBody.appendChild(summary);
-
-      difficulty = document.getElementById(`hassle-${otherHassleKey}-difficulty`).value;
-      otherHassleTotal = parseInt(difficulty) + parseInt(self.hassleRollResult);
-      rollResults.innerHTML += `<div>Hassle total: ${otherHassleTotal}</div>`;
-      win = self.elfTotal > otherHassleTotal;
-      summary.innerHTML = win ?
-        '<span class="text-success">The next hassle tries to attack you and fails.</span>' :
-        '<span class="text-danger">The next hassle successfully attacks you! You suffer any of its consequences.</span>';
-    });
-
-    // Remove the extra elements upon modal close
-    $('#modal').one('hidden.bs.modal', function () {
-      otherHassles.forEach(function (hassle) {
-        const otherHassleKey = hassle.dataset.hassleKey;
-        document.getElementById(`additional-hassle-${otherHassleKey}-summary`).remove();
-        document.getElementById(`additional-hassle-${otherHassleKey}-results`).remove();
-      });
-    });
   }
 
   handleSingleHassleLoss() {
@@ -508,5 +467,52 @@ class HassleResolver {
     const closeBtn = document.getElementById('modal-close');
     resetBtn.style.display = isInResetMode ? 'inline-block' : 'none';
     closeBtn.style.display = isInResetMode ? 'none' : 'inline-block';
+  }
+
+  handleAmbushes() {
+    const modalBody = document.getElementById('modal-body');
+    const otherHassles = document.querySelectorAll('#hassle-set > .hassle:not(:first-child)');
+    const self = this;
+    let difficulty;
+    let fists;
+    let otherHassleKey;
+    let otherHassleTotal;
+    let rollResults;
+    let summary;
+    let win;
+    otherHassles.forEach(function (hassle) {
+      // Create containers
+      otherHassleKey = hassle.dataset.hassleKey;
+      rollResults = document.createElement('div');
+      rollResults.id = `additional-hassle-${otherHassleKey}-results`;
+      rollResults.className = 'dice-container';
+      modalBody.appendChild(rollResults);
+      summary = document.createElement('div');
+      summary.id = `additional-hassle-${otherHassleKey}-summary`;
+      summary.className = 'roll-summary'
+      modalBody.appendChild(summary);
+
+      // Roll dice and add them and the total score to the modal
+      fists = document.getElementById(`hassle-${otherHassleKey}-fist-count`).value;
+      self.rollHassleDice(fists, rollResults);
+      difficulty = document.getElementById(`hassle-${otherHassleKey}-difficulty`).value;
+      otherHassleTotal = parseInt(difficulty) + parseInt(self.hassleRollResult);
+      rollResults.innerHTML += `<div>Hassle total: ${otherHassleTotal}</div>`;
+
+      // Add summary message to the modal
+      win = self.elfTotal > otherHassleTotal;
+      summary.innerHTML = win ?
+        '<span class="text-success">The next hassle tries to attack you and fails.</span>' :
+        '<span class="text-danger">The next hassle successfully attacks you! You suffer any of its consequences.</span>';
+    });
+
+    // Remove the extra elements upon modal close
+    $('#modal').one('hidden.bs.modal', function () {
+      otherHassles.forEach(function (hassle) {
+        const otherHassleKey = hassle.dataset.hassleKey;
+        document.getElementById(`additional-hassle-${otherHassleKey}-summary`).remove();
+        document.getElementById(`additional-hassle-${otherHassleKey}-results`).remove();
+      });
+    });
   }
 }
