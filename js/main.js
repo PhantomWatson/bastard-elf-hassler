@@ -1,7 +1,7 @@
 class HassleResolver {
   constructor() {
     this.round = 1;
-    this.hassleNum = 0;
+    this.hassleNum = 1;
     const form = document.getElementById('form');
     const self = this;
     form.addEventListener('submit', function (event) {
