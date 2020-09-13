@@ -246,14 +246,14 @@ class HassleResolver {
     if (this.getToughness() > 0) {
       elfRollResults.innerHTML = `Elf total: ${this.elfTotal}`;
       hassleRollResults.innerHTML = `Hassle total: ${this.hassleTotal}`;
-      rollSummary.innerHTML = (win ? 'You win!' : 'You lose and suffer this hassle\'s consequences (if any).');
+      rollSummary.innerHTML = (win ? '<span class="text-success">You win!</span>' : '<span class="text-danger">You lose and suffer this hassle\'s consequences (if any).</span>');
       if (win) {
         rollSummary.innerHTML += '<br />Hassle toughness reduced to ' + this.getToughness();
       }
     } else {
       elfRollResults.innerHTML = `Elf total: ${this.elfTotal}`;
       hassleRollResults.innerHTML = `Hassle total: ${this.hassleTotal}`;
-      rollSummary.innerHTML = 'Hassle defeated!';
+      rollSummary.innerHTML = '<span class="text-success">Hassle defeated!</span>';
       this.setModalResetMode(true);
     }
   }
@@ -268,7 +268,7 @@ class HassleResolver {
         rollSummary.innerHTML += `<br />${moreHassles} more ${moreHassles === 1 ? 'hassle is' : 'hassles are'} left.`;
       } else {
         this.setModalResetMode(true);
-        rollSummary.innerHTML += '<br />No hassles remain.'
+        rollSummary.innerHTML += '<br /><span class="text-success">No hassles remain.</span>'
       }
     }
     this.displayMessage();
