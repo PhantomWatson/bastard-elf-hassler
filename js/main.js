@@ -254,7 +254,9 @@ class HassleResolver {
       elfRollResults.innerHTML = `Elf total: ${this.elfTotal}`;
       hassleRollResults.innerHTML = `Hassle total: ${this.hassleTotal}`;
       rollSummary.innerHTML = '<span class="text-success">Hassle defeated!</span>';
-      this.setModalResetMode(true);
+      if (this.getHassleCount() === 1) {
+        this.setModalResetMode(true);
+      }
     }
   }
 
