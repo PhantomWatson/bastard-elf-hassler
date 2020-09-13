@@ -138,6 +138,11 @@ class HassleResolver {
     this.hassleRollResult = this.getWinningDie(dice);
   }
 
+  getWinningAmbushDie(hassleKey) {
+    const dice = document.getElementById(`additional-hassle-${hassleKey}-results`).childNodes;
+    return this.getWinningDie(dice);
+  }
+
   getElfTotal() {
     this.elfTotal = this.getEffort() + parseInt(this.elfRollResult);
   }
@@ -503,7 +508,7 @@ class HassleResolver {
       fists = document.getElementById(`hassle-${otherHassleKey}-fist-count`).value;
       self.rollHassleDice(fists, rollResults);
       difficulty = document.getElementById(`hassle-${otherHassleKey}-difficulty`).value;
-      otherHassleTotal = parseInt(difficulty) + parseInt(self.hassleRollResult);
+      otherHassleTotal = parseInt(difficulty) + parseInt(self.getWinningAmbushDie(otherHassleKey));
       rollResults.innerHTML += `<div>Hassle total: ${otherHassleTotal}</div>`;
 
       // Add summary message to the modal
