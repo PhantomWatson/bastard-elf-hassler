@@ -412,7 +412,9 @@ class HassleResolver {
   }
 
   setIsMultipleHassle(value) {
-    document.getElementById('multiple-hassle').checked = value;
+    const checkbox = document.getElementById('multiple-hassle');
+    checkbox.checked = value;
+    this.handleToggleMultiple(checkbox);
   }
 
   /**
