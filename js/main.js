@@ -460,6 +460,11 @@ class HassleResolver {
     const container = document.getElementById('hassle-set');
     const firstHassle = container.querySelector('.hassle:' + selector + '-child');
     firstHassle.parentNode.removeChild(firstHassle);
+
+    // If a multiple hassle is reduced from > 1 hassles to 1 hassle, it becomes a non-multiple hassle
+    if (selector === 'first' && this.getHassleCount() === 1 && this.getIsMultipleHassle()) {
+      this.setIsMultipleHassle(false);
+    }
   }
 
   setModalResetMode(isInResetMode) {
