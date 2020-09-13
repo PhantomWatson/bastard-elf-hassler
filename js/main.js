@@ -51,9 +51,6 @@ class HassleResolver {
     removeButton.addEventListener('click', function (event) {
       event.preventDefault();
       self.removeHassle('last');
-      if (self.getHassleCount() === 1) {
-        removeButton.style.display = 'none';
-      }
     });
   }
 
@@ -471,6 +468,11 @@ class HassleResolver {
     // If a multiple hassle is reduced from > 1 hassles to 1 hassle, it becomes a non-multiple hassle
     if (selector === 'first' && this.getHassleCount() === 1 && this.getIsMultipleHassle()) {
       this.setIsMultipleHassle(false);
+    }
+
+    if (this.getHassleCount() === 1) {
+      const removeButton = document.getElementById('remove-hassle');
+      removeButton.style.display = 'none';
     }
   }
 
