@@ -466,10 +466,12 @@ class HassleResolver {
     const toughness = newHassle.querySelector('.hassle-toughness');
     const name = newHassle.querySelector('.hassle-name');
     newHassle.dataset.hassleKey++;
-    difficulty.id = `hassle-${newHassle.dataset.hassleKey}-difficulty`;
-    fists.id = `hassle-${newHassle.dataset.hassleKey}-fist-count`;
-    toughness.id = `hassle-${newHassle.dataset.hassleKey}-toughness`;
-    name.id = `hassle-${newHassle.dataset.hassleKey}-name`;
+    const hassleKey = newHassle.dataset.hassleKey;
+    difficulty.id = `hassle-${hassleKey}-difficulty`;
+    fists.id = `hassle-${hassleKey}-fist-count`;
+    toughness.id = `hassle-${hassleKey}-toughness`;
+    name.id = `hassle-${hassleKey}-name`;
+    name.placeholder = `Hassle #${hassleKey}`;
     hassleContainer.appendChild(newHassle);
   }
 
