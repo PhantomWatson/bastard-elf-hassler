@@ -379,6 +379,7 @@ class HassleResolver {
     this.setEffortSpent(0);
     this.setToughness(1);
     this.setIsMultipleHassle(false);
+    document.getElementById('remove-hassle').style.display = 'none';
 
     // Remove hassles
     const hasslesToRemove = document.querySelectorAll('#hassle-set .hassle:not(:first-child)');
