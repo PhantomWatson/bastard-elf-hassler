@@ -384,12 +384,16 @@ class HassleResolver {
   }
 
   handleReset() {
+    const submitButton = document.getElementById('submit');
+    if (submitButton.style.display !== 'none' && !confirm('Really reset? This hassle hasn\'t been resolved yet.')) {
+      return;
+    }
     this.round = 1;
     this.updateRoundDisplay();
     this.clearDice();
     this.resetInputs();
     this.setModalResetMode(false);
-    document.getElementById('submit').style.display = 'inline';
+    submitButton.style.display = 'inline';
     document.querySelector('#form button.reset-btn').style.display = 'none';
   }
 
