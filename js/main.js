@@ -74,6 +74,7 @@ class HassleResolver {
     if (!this.validate()) {
       return;
     }
+    this.deductEffort();
     this.rollElfDice();
     this.getElfTotal();
     this.rollHassleDice(this.getCurrentHassle().fists, this.hassleDiceContainer);
@@ -156,7 +157,7 @@ class HassleResolver {
   }
 
   getElfTotal() {
-    this.elfTotal = this.getEffort() + parseInt(this.elfRollResult);
+    this.elfTotal = this.getEffortSpent() + parseInt(this.elfRollResult);
   }
 
   getCurrentHassle() {
@@ -400,7 +401,7 @@ class HassleResolver {
     });
   }
 
-  getEffort() {
+  getEffortSpent() {
     return parseInt(document.getElementById('effort-spent').value);
   }
 
@@ -564,5 +565,12 @@ class HassleResolver {
     const effortSpent = document.getElementById('effort-spent');
     document.getElementById('effort-spendable-max').innerText = '' + lowest;
     effortSpent.max = lowest;
+  }
+
+  deductEffort() {
+    const effortSpent = this.getEffortSpent();
+    const totalEffortField = document.getElementById('total-effort');
+    totalEffortField.value = Math.max((totalEffortField.value - effortSpent), 0);
+    this.updateMaxSpendableEffort();
   }
 }
