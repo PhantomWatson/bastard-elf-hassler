@@ -9,7 +9,7 @@ class HassleResolver {
       self.handleFormSubmit();
     });
 
-    const multipleHassleCheckbox = document.getElementById('multiple-hassle');
+    const multipleHassleCheckbox = this.getMultipleHassleField();
     multipleHassleCheckbox.addEventListener('change', function () {
       self.handleToggleMultiple(this);
     });
@@ -45,7 +45,7 @@ class HassleResolver {
 
     this.elfDiceContainer = document.getElementById('elf-dice-container');
     this.hassleDiceContainer = document.getElementById('hassle-dice-container');
-    const effortSpentField = document.getElementById('effort-spent');
+    const effortSpentField = this.getEffortSpentField();
     effortSpentField.addEventListener('input', function () {
       const effortSelection = document.getElementById('effort-spent-selected');
       effortSelection.innerText = effortSpentField.value;
@@ -58,11 +58,11 @@ class HassleResolver {
       self.removeHassle('last');
     });
 
-    const totalElan = document.getElementById('total-elan');
+    const totalElan = this.getTotalElanField();
     totalElan.addEventListener('change', function () {
       self.updateMaxSpendableEffort();
     });
-    const totalEffort = document.getElementById('total-effort');
+    const totalEffort = this.getTotalEffortField();
     totalEffort.addEventListener('change', function () {
       self.updateMaxSpendableEffort();
     });
@@ -380,7 +380,7 @@ class HassleResolver {
     });
 
     // Focus on effort input
-    document.getElementById('effort-spent').focus();
+    this.getEffortSpentField().focus();
   }
 
   handleReset() {
@@ -406,11 +406,11 @@ class HassleResolver {
   }
 
   getEffortSpent() {
-    return parseInt(document.getElementById('effort-spent').value);
+    return parseInt(this.getEffortSpentField().value);
   }
 
   setEffortSpent(value) {
-    document.getElementById('effort-spent').value = value;
+    this.getEffortSpentField().value = value;
     document.getElementById('effort-spent-selected').innerText = value;
   }
 
@@ -431,13 +431,17 @@ class HassleResolver {
   }
 
   getIsMultipleHassle() {
-    return document.getElementById('multiple-hassle').checked;
+    return this.getMultipleHassleField().checked;
   }
 
   setIsMultipleHassle(value) {
-    const checkbox = document.getElementById('multiple-hassle');
+    const checkbox = this.getMultipleHassleField();
     checkbox.checked = value;
     this.handleToggleMultiple(checkbox);
+  }
+
+  getMultipleHassleField() {
+    return document.getElementById('multiple-hassle');
   }
 
   /**
@@ -563,18 +567,30 @@ class HassleResolver {
   }
 
   updateMaxSpendableEffort() {
-    const totalElan = document.getElementById('total-elan').value;
-    const totalEffort = document.getElementById('total-effort').value;
+    const totalElan = this.getTotalElanField().value;
+    const totalEffort = this.getTotalEffortField().value;
     const lowest = Math.min(parseInt(totalElan), parseInt(totalEffort));
-    const effortSpent = document.getElementById('effort-spent');
+    const effortSpent = this.getEffortSpentField();
     document.getElementById('effort-spendable-max').innerText = '' + lowest;
     effortSpent.max = lowest;
   }
 
   deductEffort() {
     const effortSpent = this.getEffortSpent();
-    const totalEffortField = document.getElementById('total-effort');
+    const totalEffortField = this.getTotalEffortField();
     totalEffortField.value = Math.max((totalEffortField.value - effortSpent), 0);
     this.updateMaxSpendableEffort();
+  }
+
+  getEffortSpentField() {
+    return document.getElementById('effort-spent');
+  }
+
+  getTotalEffortField() {
+    return document.getElementById('total-effort');
+  }
+
+  getTotalElanField() {
+    return document.getElementById('total-elan');
   }
 }
