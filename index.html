@@ -170,7 +170,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">
+          <h5 class="modal-title">
             <span id="modal-round">Round 1</span> Results
           </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -196,6 +196,72 @@
     </div>
   </div>
 
+  <div class="modal fade" id="algorithm-popup">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            Hassle Resolution Mechanics
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ol>
+            <li>
+              Add effort spent + highest single die roll of 1d6 per elf fist.
+              <ul>
+                <li>
+                  If this is a multiple hassle, re-roll any die that scores 4 or higher once and keep the result.
+                </li>
+              </ul>
+            </li>
+            <li>
+              Add hassle difficulty + highest single die roll of 1d6 per hassle fist.
+            </li>
+            <li>
+              Compare totals.
+              <ul>
+                <li>
+                  If the elf's total is greater, you win.
+                  <ul>
+                    <li>
+                      If the hassle has remaining toughness, subtract 1 from its toughness and return to step 1,
+                      advancing the round.
+                    </li>
+                    <li>
+                      If there’s no remaining toughness, the hassle is defeated.
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  If the elf's total is <em>not</em> greater, suffer consequences (if any), then return to step 1 and
+                  try again in the next round.
+                  <ul>
+                    <li>
+                      If this is a multiple hassle, you determine the scores of the other hassles and compare them to
+                      the total you scored against the targeted hassle.
+                    </li>
+                    <li>
+                      You then suffer the consequences for losing to each other hassle that your total is equal to or
+                      lower than.
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ol>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <footer class="container">
     <div class="row">
       <div class="col-sm-2">
@@ -209,6 +275,7 @@
           This is a dice-roller for combat and other such hassles in the game
           <em>The Sword of the Bastard Elf</em>.
         </p>
+        <button id="algorithm-button" class="btn btn-info">Mechanics Explanation</button>
       </section>
       <section class="col-sm-5">
         <h3>Links</h3>

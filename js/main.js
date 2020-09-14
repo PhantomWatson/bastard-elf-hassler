@@ -67,6 +67,11 @@ class HassleResolver {
       self.updateMaxSpendableEffort();
     });
     this.updateMaxSpendableEffort();
+
+    const algorithmButton = document.getElementById('algorithm-button');
+    algorithmButton.addEventListener('click', function () {
+      $('#algorithm-popup').modal();
+    });
   }
 
   handleFormSubmit() {
