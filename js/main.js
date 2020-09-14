@@ -40,7 +40,7 @@ class HassleResolver {
     document.getElementById('add-hassle').addEventListener('click', function () {
       const lastHassle = document.querySelector('#hassle-set > .hassle:last-child');
       const hassleKey = lastHassle.dataset.hassleKey;
-      self.handleAddHassle(hassleKey + 1);
+      self.handleAddHassle(parseInt(hassleKey) + 1);
     })
 
     this.elfDiceContainer = document.getElementById('elf-dice-container');
@@ -368,7 +368,9 @@ class HassleResolver {
     // Reset inputs
     document.getElementById(`hassle-${this.hassleNum}-fist-count`).value = 0;
     document.getElementById(`hassle-${this.hassleNum}-difficulty`).value = 1;
-    document.getElementById(`hassle-${this.hassleNum}-name`).value = '';
+    const hassleName = document.getElementById(`hassle-${this.hassleNum}-name`);
+    hassleName.value = '';
+    hassleName.placeholder = `Hassle #${this.hassleNum}`;
     this.setEffortSpent(0);
     this.setToughness(1);
     this.setIsMultipleHassle(false);
@@ -393,6 +395,7 @@ class HassleResolver {
     this.clearDice();
     this.resetInputs();
     this.setModalResetMode(false);
+    this.advanceHassleNum();
     submitButton.style.display = 'inline';
     document.querySelector('#form button.reset-btn').style.display = 'none';
   }
@@ -457,7 +460,7 @@ class HassleResolver {
   /**
    * Inserts a hassle into the queue. Also used in resetting hassle inputs
    */
-  addHassle() {
+  addHassle(hassleKey) {
     const lastHassle = document.querySelector('#hassle-set > .hassle:last-child');
     const hassleContainer = document.getElementById('hassle-set');
     const newHassle = lastHassle.cloneNode(true);
@@ -465,8 +468,8 @@ class HassleResolver {
     const fists = newHassle.querySelector('.hassle-fists');
     const toughness = newHassle.querySelector('.hassle-toughness');
     const name = newHassle.querySelector('.hassle-name');
-    newHassle.dataset.hassleKey++;
-    const hassleKey = newHassle.dataset.hassleKey;
+    newHassle.dataset.hassleKey = hassleKey;
+    //const hassleKey = newHassle.dataset.hassleKey;
     difficulty.id = `hassle-${hassleKey}-difficulty`;
     fists.id = `hassle-${hassleKey}-fist-count`;
     toughness.id = `hassle-${hassleKey}-toughness`;
@@ -594,5 +597,20 @@ class HassleResolver {
 
   getTotalElanField() {
     return document.getElementById('total-elan');
+  }
+
+  advanceHassleNum() {
+    this.hassleNum++;
+    const hassle = document.querySelector('#hassle-set > .hassle:first-child');
+    hassle.dataset.hassleKey = this.hassleNum;
+    const difficulty = hassle.querySelector('.hassle-difficulty');
+    const fists = hassle.querySelector('.hassle-fists');
+    const toughness = hassle.querySelector('.hassle-toughness');
+    const name = hassle.querySelector('.hassle-name');
+    difficulty.id = `hassle-${this.hassleNum}-difficulty`;
+    fists.id = `hassle-${this.hassleNum}-fist-count`;
+    toughness.id = `hassle-${this.hassleNum}-toughness`;
+    name.id = `hassle-${this.hassleNum}-name`;
+    name.placeholder = `Hassle #${this.hassleNum}`;
   }
 }
