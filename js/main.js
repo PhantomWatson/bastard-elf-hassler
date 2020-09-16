@@ -72,6 +72,15 @@ class HassleResolver {
     algorithmButton.addEventListener('click', function () {
       $('#algorithm-popup').modal();
     });
+
+    const hassleRollModifiers = document.querySelectorAll('.hassle-difficulty, .hassle-fists');
+    hassleRollModifiers.forEach(function (input) {
+      input.addEventListener('change', function () {
+        self.updateEffortSpendingAdvice();
+      })
+    });
+
+    this.updateEffortSpendingAdvice();
   }
 
   handleFormSubmit() {
@@ -387,6 +396,8 @@ class HassleResolver {
       hassle.remove()
     });
 
+    this.updateEffortSpendingAdvice();
+
     // Focus on effort input
     this.getEffortSpentField().focus();
   }
@@ -619,4 +630,20 @@ class HassleResolver {
     name.id = `hassle-${this.hassleNum}-name`;
     name.placeholder = `Hassle #${this.hassleNum}`;
   }
+
+  updateEffortSpendingAdvice() {
+    const possibleSuccess = document.getElementById('effort-for-possible-success');
+    const guaranteedSuccess = document.getElementById('effort-to-guarantee-success');
+    const hassle = this.getCurrentHassle();
+    const minHassleTotal = hassle.difficulty + (hassle.fists === 0 ? 0 : 1);
+    const maxHassleTotal = hassle.difficulty + (hassle.fists === 0 ? 0 : 6);
+    const minElfRoll = 1;
+    const maxElfRoll = 6;
+    const minEffortForPossibleSuccess = Math.max(minHassleTotal - maxElfRoll + 1, 0);
+    const minEffortForGuaranteedSuccess = Math.max(maxHassleTotal - minElfRoll + 1, 0);
+
+    possibleSuccess.innerText = '' + minEffortForPossibleSuccess;
+    guaranteedSuccess.innerText = '' + minEffortForGuaranteedSuccess;
+  }
+
 }
