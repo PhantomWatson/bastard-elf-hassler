@@ -92,6 +92,26 @@
                 Effort spent can't exceed current &eacute;lan
               </li>
             </ul>
+
+            <div class="form-group form-check">
+              <input class="form-check-input" type="checkbox" value="1" id="elf-auto-reroll">
+              <label class="form-check-label" for="elf-auto-reroll">
+                Automatically re-roll...
+              </label>
+              <div id="elf-reroll-options" class="reroll-options">
+                <i class="fas fa-dice-one" data-value="1" data-selected="0"></i>
+                <i class="fas fa-dice-two" data-value="2" data-selected="0"></i>
+                <i class="fas fa-dice-three" data-value="3" data-selected="0"></i>
+                <i class="fas fa-dice-four" data-value="4" data-selected="0"></i>
+                <i class="fas fa-dice-five" data-value="5" data-selected="0"></i>
+                <i class="fas fa-dice-six" data-value="6" data-selected="0"></i>
+                <br />
+                <small class="form-text text-muted">
+                  The selected dice will automatically be re-rolled once (doesn't stack with re-rolls due to being in
+                  a multiple hassle)
+                </small>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -163,6 +183,26 @@
             <button class="btn btn-sm btn-secondary float-right multiple-only" id="add-hassle" type="button">
               Add Hassle
             </button>
+
+            <div class="form-group form-check" id="hassle-auto-reroll-container">
+              <input class="form-check-input" type="checkbox" value="1" id="hassle-auto-reroll">
+              <label class="form-check-label" for="hassle-auto-reroll">
+                Automatically re-roll...
+              </label>
+              <div id="hassle-reroll-options" class="reroll-options">
+                <i class="fas fa-dice-one" data-value="1" data-selected="0"></i>
+                <i class="fas fa-dice-two" data-value="2" data-selected="0"></i>
+                <i class="fas fa-dice-three" data-value="3" data-selected="0"></i>
+                <i class="fas fa-dice-four" data-value="4" data-selected="0"></i>
+                <i class="fas fa-dice-five" data-value="5" data-selected="0"></i>
+                <i class="fas fa-dice-six" data-value="6" data-selected="0"></i>
+                <br />
+                <small class="form-text text-muted">
+                  The selected dice will automatically be re-rolled once
+                </small>
+              </div>
+            </div>
+
           </div>
         </section>
       </div>

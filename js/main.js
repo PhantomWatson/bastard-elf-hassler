@@ -81,6 +81,25 @@ class HassleResolver {
     });
 
     this.updateEffortSpendingAdvice();
+
+    this.prepareAutoRerollSelectors();
+  }
+
+  prepareAutoRerollSelectors() {
+    ['elf', 'hassle'].forEach(function (section) {
+      const checkbox = document.getElementById(`${section}-auto-reroll`);
+      const diceContainer = document.getElementById(`${section}-reroll-options`);
+      checkbox.addEventListener('change', function (event) {
+        diceContainer.style.display = event.target.checked ? 'block' : 'none';
+      });
+      const dice = diceContainer.querySelectorAll('i');
+      dice.forEach(function (die) {
+        die.addEventListener('click', function (event) {
+          const dataset = event.target.dataset;
+          dataset.selected = dataset.selected === '1' ? '0' : '1';
+        })
+      });
+    });
   }
 
   handleFormSubmit() {

@@ -367,3 +367,23 @@ footer {
 #multiple-hassle-notes .form-check-label {
   margin-left: 1.25rem;
 }
+
+.reroll-options {
+  display: none;
+}
+
+.reroll-options i {
+  color: #888;
+  cursor: pointer;
+  font-size: 2.5em;
+}
+
+.reroll-options i[data-selected="1"] {
+  color: #000;
+  text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+#hassle-auto-reroll-container {
+  clear: both;
+  margin-top: 1rem;
+}
