@@ -115,16 +115,21 @@ class HassleResolver {
 
   rollElfDice() {
     let die;
+    const isUsingCat = this.isUsingCat();
     for (let n = 0; n < this.getElfFists(); n++) {
       die = this.getRandomDie();
       this.elfDiceContainer.appendChild(die);
-      if (this.getIsMultipleHassle() && die.dataset.value >= 4) {
+      if (!isUsingCat && this.getIsMultipleHassle() && die.dataset.value >= 4) {
         this.markRerolled(die);
         this.elfDiceContainer.appendChild(this.getRerollIcon());
         this.elfDiceContainer.appendChild(this.getRandomDie());
       }
     }
     this.getWinningElfDie();
+
+    if (isUsingCat) {
+      document.getElementById('familiar-cat').checked = false;
+    }
   }
 
   getRandomDie() {
@@ -646,4 +651,9 @@ class HassleResolver {
     guaranteedSuccess.innerText = '' + minEffortForGuaranteedSuccess;
   }
 
+  isUsingCat() {
+    const catField = document.getElementById('familiar-cat');
+
+    return catField.checked;
+  }
 }

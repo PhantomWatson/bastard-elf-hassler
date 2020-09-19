@@ -359,3 +359,11 @@ footer {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
 }
+
+#multiple-hassle-notes .form-check-input {
+  margin-left: 0;
+}
+
+#multiple-hassle-notes .form-check-label {
+  margin-left: 1.25rem;
+}
