@@ -134,11 +134,13 @@ class HassleResolver {
 
   rollElfDice() {
     let die;
-    const isUsingCat = this.isUsingCat();
+    let needsRerolled;
+    const autoRerollTargets = this.getElfAutoRerollTargets();
     for (let n = 0; n < this.getElfFists(); n++) {
       die = this.getRandomDie();
       this.elfDiceContainer.appendChild(die);
-      if (!isUsingCat && this.getIsMultipleHassle() && die.dataset.value >= 4) {
+      needsRerolled = autoRerollTargets.indexOf(die.dataset.value) !== -1;
+      if (needsRerolled) {
         this.markRerolled(die);
         this.elfDiceContainer.appendChild(this.getRerollIcon());
         this.elfDiceContainer.appendChild(this.getRandomDie());
@@ -146,7 +148,7 @@ class HassleResolver {
     }
     this.getWinningElfDie();
 
-    if (isUsingCat) {
+    if (this.isUsingCat()) {
       document.getElementById('familiar-cat').checked = false;
     }
   }
@@ -160,7 +162,7 @@ class HassleResolver {
       ['five', 5],
       ['six', 6],
     ];
-    const key = Math.floor(Math.random() * 5);
+    const key = Math.floor(Math.random() * 6);
     const number = numbers[key];
     const numberWord = number[0];
     const numberDigit = number[1];
@@ -674,5 +676,22 @@ class HassleResolver {
     const catField = document.getElementById('familiar-cat');
 
     return catField.checked;
+  }
+
+  getElfAutoRerollTargets() {
+    const values = [];
+    if (!this.isUsingCat() && this.getIsMultipleHassle()) {
+      values.push('4', '5', '6');
+    }
+
+    const selectedDice = document.querySelectorAll('#elf-reroll-options i[data-selected="1"]');
+    selectedDice.forEach(function (die) {
+      const value = die.dataset.value;
+      if (values.indexOf(value) === -1) {
+        values.push(value);
+      }
+    });
+
+    return values;
   }
 }
