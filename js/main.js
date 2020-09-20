@@ -2,86 +2,19 @@ class HassleResolver {
   constructor() {
     this.round = 1;
     this.hassleNum = 1;
-    const form = document.getElementById('form');
-    const self = this;
-    form.addEventListener('submit', function (event) {
-      event.preventDefault();
-      self.handleFormSubmit();
-    });
-
-    const multipleHassleCheckbox = this.getMultipleHassleField();
-    multipleHassleCheckbox.addEventListener('change', function () {
-      self.handleToggleMultiple(this);
-    });
-
-    document.querySelectorAll('button.reset-btn').forEach(function (button) {
-      button.addEventListener('click', function () {
-        self.handleReset();
-      });
-    });
-
-    const modal = $('#modal');
-    modal.on('hidden.bs.modal', function () {
-      self.setEffortSpent(0);
-    });
-    modal.on('shown.bs.modal', function () {
-      document.getElementById('modal-close').focus();
-    });
-    document.getElementById('modal-close').addEventListener('click', function () {
-      const submit = document.getElementById('submit');
-      const reset = document.querySelector('#form button.reset-btn');
-      if (submit.style.display !== 'none') {
-        submit.focus();
-      } else {
-        reset.focus();
-      }
-    });
-
-    document.getElementById('add-hassle').addEventListener('click', function () {
-      const lastHassle = document.querySelector('#hassle-set > .hassle:last-child');
-      const hassleKey = lastHassle.dataset.hassleKey;
-      self.handleAddHassle(parseInt(hassleKey) + 1);
-    })
-
     this.elfDiceContainer = document.getElementById('elf-dice-container');
     this.hassleDiceContainer = document.getElementById('hassle-dice-container');
-    const effortSpentField = this.getEffortSpentField();
-    effortSpentField.addEventListener('input', function () {
-      const effortSelection = document.getElementById('effort-spent-selected');
-      effortSelection.innerText = effortSpentField.value;
-    });
-    effortSpentField.focus();
-
-    const removeButton = document.getElementById('remove-hassle');
-    removeButton.addEventListener('click', function (event) {
-      event.preventDefault();
-      self.removeHassle('last');
-    });
-
-    const totalElan = this.getTotalElanField();
-    totalElan.addEventListener('change', function () {
-      self.updateMaxSpendableEffort();
-    });
-    const totalEffort = this.getTotalEffortField();
-    totalEffort.addEventListener('change', function () {
-      self.updateMaxSpendableEffort();
-    });
-    this.updateMaxSpendableEffort();
-
-    const algorithmButton = document.getElementById('algorithm-button');
-    algorithmButton.addEventListener('click', function () {
-      $('#algorithm-popup').modal();
-    });
-
-    const hassleRollModifiers = document.querySelectorAll('.hassle-difficulty, .hassle-fists');
-    hassleRollModifiers.forEach(function (input) {
-      input.addEventListener('change', function () {
-        self.updateEffortSpendingAdvice();
-      })
-    });
-
+    this.prepareFormSubmit();
+    this.prepareMultiHassleCheckbox();
+    this.prepareResetButtons();
+    this.prepareModal();
+    this.prepareAddHassleButton();
+    this.prepareRemoveHassleButton();
+    this.prepareEffortInputs();
+    this.getEffortSpentField().focus();
+    this.prepareFooter();
+    this.prepareEffortSpendingAdvice();
     this.updateEffortSpendingAdvice();
-
     this.prepareAutoRerollSelectors();
   }
 
@@ -714,5 +647,108 @@ class HassleResolver {
     });
 
     return values;
+  }
+
+  prepareModal() {
+    const modal = $('#modal');
+    const self = this;
+    modal.on('hidden.bs.modal', function () {
+      self.setEffortSpent(0);
+    });
+    modal.on('shown.bs.modal', function () {
+      document.getElementById('modal-close').focus();
+    });
+    const closeButton = document.getElementById('modal-close');
+    closeButton.addEventListener('click', function () {
+      const submit = document.getElementById('submit');
+      const reset = document.querySelector('#form button.reset-btn');
+      if (submit.style.display !== 'none') {
+        submit.focus();
+      } else {
+        reset.focus();
+      }
+    });
+  }
+
+  prepareResetButtons() {
+    const resetButtons = document.querySelectorAll('button.reset-btn');
+    const self = this;
+    resetButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        self.handleReset();
+      });
+    });
+  }
+
+  prepareAddHassleButton() {
+    const addHassleButton = document.getElementById('add-hassle');
+    const self = this;
+    addHassleButton.addEventListener('click', function () {
+      const lastHassle = document.querySelector('#hassle-set > .hassle:last-child');
+      const hassleKey = lastHassle.dataset.hassleKey;
+      self.handleAddHassle(parseInt(hassleKey) + 1);
+    });
+  }
+
+  prepareEffortInputs() {
+    const self = this;
+    const totalElan = this.getTotalElanField();
+    totalElan.addEventListener('change', function () {
+      self.updateMaxSpendableEffort();
+    });
+    const totalEffort = this.getTotalEffortField();
+    totalEffort.addEventListener('change', function () {
+      self.updateMaxSpendableEffort();
+    });
+    this.updateMaxSpendableEffort();
+
+    const effortSpentField = this.getEffortSpentField();
+    effortSpentField.addEventListener('input', function () {
+      const effortSelection = document.getElementById('effort-spent-selected');
+      effortSelection.innerText = effortSpentField.value;
+    });
+  }
+
+  prepareFooter() {
+    const algorithmButton = document.getElementById('algorithm-button');
+    algorithmButton.addEventListener('click', function () {
+      $('#algorithm-popup').modal();
+    });
+  }
+
+  prepareEffortSpendingAdvice() {
+    const self = this;
+    const hassleRollModifiers = document.querySelectorAll('.hassle-difficulty, .hassle-fists');
+    hassleRollModifiers.forEach(function (input) {
+      input.addEventListener('change', function () {
+        self.updateEffortSpendingAdvice();
+      })
+    });
+  }
+
+  prepareFormSubmit() {
+    const self = this;
+    const form = document.getElementById('form');
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      self.handleFormSubmit();
+    });
+  }
+
+  prepareMultiHassleCheckbox() {
+    const self = this;
+    const multipleHassleCheckbox = this.getMultipleHassleField();
+    multipleHassleCheckbox.addEventListener('change', function () {
+      self.handleToggleMultiple(this);
+    });
+  }
+
+  prepareRemoveHassleButton() {
+    const self = this;
+    const removeButton = document.getElementById('remove-hassle');
+    removeButton.addEventListener('click', function (event) {
+      event.preventDefault();
+      self.removeHassle('last');
+    });
   }
 }
