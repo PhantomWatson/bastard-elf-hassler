@@ -314,9 +314,10 @@ class HassleResolver {
   handleSingleHassleWin() {
     this.reduceToughness();
     this.showSingleHassleResults();
-    this.advanceRoundOnModalClose();
     if (this.getToughness() === 0) {
       this.hideSubmitButton();
+    } else {
+      this.advanceRoundOnModalClose();
     }
   }
 
