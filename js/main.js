@@ -173,10 +173,18 @@ class HassleResolver {
   }
 
   rollHassleDice(fists, container) {
+    const autoRerollTargets = this.getHassleAutoRerollTargets();
     let die;
+    let needsRerolled;
     for (let n = 0; n < fists; n++) {
       die = this.getRandomDie();
       container.appendChild(die);
+      needsRerolled = autoRerollTargets.indexOf(die.dataset.value) !== -1;
+      if (needsRerolled) {
+        this.markRerolled(die);
+        container.appendChild(this.getRerollIcon());
+        container.appendChild(this.getRandomDie());
+      }
     }
     this.getWinningHassleDie();
   }
@@ -685,6 +693,19 @@ class HassleResolver {
     }
 
     const selectedDice = document.querySelectorAll('#elf-reroll-options i[data-selected="1"]');
+    selectedDice.forEach(function (die) {
+      const value = die.dataset.value;
+      if (values.indexOf(value) === -1) {
+        values.push(value);
+      }
+    });
+
+    return values;
+  }
+
+  getHassleAutoRerollTargets() {
+    const values = [];
+    const selectedDice = document.querySelectorAll('#hassle-reroll-options i[data-selected="1"]');
     selectedDice.forEach(function (die) {
       const value = die.dataset.value;
       if (values.indexOf(value) === -1) {
