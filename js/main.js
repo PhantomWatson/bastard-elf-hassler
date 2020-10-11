@@ -17,6 +17,9 @@ class HassleResolver {
     this.updateEffortSpendingAdvice();
     this.prepareAutoRerollSelectors();
     this.prepareCanRerollToggler();
+
+    // Flags for indicating what actions to take when concluding this round
+    this.resetConcludeRoundFlags();
   }
 
   prepareAutoRerollSelectors() {
@@ -43,16 +46,17 @@ class HassleResolver {
     }
     this.deductEffort();
     this.rollElfDice();
-    this.getElfTotal();
     this.rollHassleDice(this.getCurrentHassle().fists, this.hassleDiceContainer);
-    this.getHassleTotal();
-    const isWin = this.elfTotal > this.hassleTotal;
-    const isMultiple = this.getIsMultipleHassle();
-    this.handleRollResults(isMultiple, isWin);
+    this.handleRollResults();
     this.showFormResetButton();
   }
 
-  handleRollResults(isMultiple, isWin) {
+  handleRollResults() {
+    this.getElfTotal();
+    this.getHassleTotal();
+    console.log(`totals are now ${this.elfTotal} vs. ${this.hassleTotal}`);
+    const isWin = this.elfTotal > this.hassleTotal;
+    const isMultiple = this.getIsMultipleHassle();
     if (isWin) {
       if (isMultiple) {
         this.handleMultipleHassleWin();
@@ -248,26 +252,29 @@ class HassleResolver {
   }
 
   setRoundEndMessage() {
+    console.log('setRoundEndMessage');
     const elfRollResults = document.getElementById('elf-roll-results');
     const hassleRollResults = document.getElementById('hassle-roll-results');
     const rollSummary = document.getElementById('roll-summary');
-    let win = this.elfTotal > this.hassleTotal;
     const hassleName = this.getHassleName(this.hassleNum);
     elfRollResults.innerHTML = `Elf total: ${this.elfTotal}`;
     hassleRollResults.innerHTML = `Hassle total: ${this.hassleTotal}`;
-    if (this.getToughness() > 0) {
+    const defeatedHassle = this.getToughness() === 1 && this.roundConclusion.reduceToughness;
+
+    if (defeatedHassle) {
+      rollSummary.innerHTML = `<span class="text-success">You've defeated ${hassleName}</span>`;
+      if (this.getHassleCount() === 1) {
+        this.setModalResetMode(true);
+      }
+    } else {
+      let win = this.elfTotal > this.hassleTotal;
       rollSummary.innerHTML = (
         win ?
           `<span class="text-success">You win against against ${hassleName}!</span>` :
           `<span class="text-danger">You lose against ${hassleName} this round and suffer any resulting consequences.</span>`
       );
       if (win) {
-        rollSummary.innerHTML += `<br />The toughness of ${hassleName} has been reduced to ${this.getToughness()}`;
-      }
-    } else {
-      rollSummary.innerHTML = `<span class="text-success">You've defeated ${hassleName}</span>`;
-      if (this.getHassleCount() === 1) {
-        this.setModalResetMode(true);
+        rollSummary.innerHTML += `<br />The toughness of ${hassleName} has been reduced to ${this.getToughness() - 1}`;
       }
     }
   }
@@ -276,7 +283,8 @@ class HassleResolver {
     this.setRoundEndMessage();
     const hassleCount = this.getHassleCount();
     const rollSummary = document.getElementById('roll-summary');
-    if (this.getToughness() === 0) {
+    const toughnessReducedToZero = this.getToughness() === 1 && this.roundConclusion.reduceToughness;
+    if (toughnessReducedToZero) {
       if (hassleCount > 1) {
         let moreHassles = hassleCount - 1;
         rollSummary.innerHTML += `<br />${moreHassles} more ${moreHassles === 1 ? 'hassle is' : 'hassles are'} left.`;
@@ -294,22 +302,22 @@ class HassleResolver {
   }
 
   handleMultipleHassleWin() {
-    this.reduceToughness();
+    this.roundConclusion.reduceToughness = true;
     this.showMultipleHassleResults();
-    if (this.getToughness() > 0) {
-      this.advanceRoundOnModalClose();
+    if (this.getToughness() > 1) {
+      this.roundConclusion.advanceRound = true;
     } else {
       if (this.getHassleCount() > 1) {
-        this.removeHassle('first');
+        this.roundConclusion.removeHassle = true;
         this.hassleNum++;
       } else {
-        this.hideSubmitButton();
+        this.roundConclusion.hideSubmitButton = true;
       }
     }
   }
 
   handleMultipleHassleLoss() {
-    this.advanceRoundOnModalClose();
+    this.roundConclusion.advanceRound = true;
     this.showMultipleHassleResults();
     if (this.getHassleCount() > 1) {
       this.handleAmbushes();
@@ -317,17 +325,17 @@ class HassleResolver {
   }
 
   handleSingleHassleLoss() {
-    this.advanceRoundOnModalClose();
+    this.roundConclusion.advanceRound = true;
     this.showSingleHassleResults();
   }
 
   handleSingleHassleWin() {
-    this.reduceToughness();
+    this.roundConclusion.reduceToughness = true;
     this.showSingleHassleResults();
-    if (this.getToughness() === 0) {
-      this.hideSubmitButton();
+    if (this.getToughness() === 1) {
+      this.roundConclusion.hideSubmitButton = true;
     } else {
-      this.advanceRoundOnModalClose();
+      this.roundConclusion.advanceRound = true;
     }
   }
 
@@ -382,7 +390,8 @@ class HassleResolver {
 
   handleReset() {
     const submitButton = document.getElementById('submit');
-    if (submitButton.style.display !== 'none' && !confirm('Really reset? This hassle hasn\'t been resolved yet.')) {
+    const getConfirmation = submitButton.style.display !== 'none' && !this.roundConclusion.hideSubmitButton;
+    if (getConfirmation && !confirm('Really reset? This hassle hasn\'t been resolved yet.')) {
       return;
     }
     this.round = 1;
@@ -393,11 +402,13 @@ class HassleResolver {
     this.advanceHassleNum();
     submitButton.style.display = 'inline';
     document.querySelector('#form button.reset-btn').style.display = 'none';
+
+    this.roundConclusion.hideSubmitButton = false;
+    this.roundConclusion.reduceToughness = false;
   }
 
   advanceRoundOnModalClose() {
     let self = this;
-    // Wait to advance the round until after the modal is closed
     $('#modal').one('hidden.bs.modal', function () {
       self.advanceRound();
     });
@@ -668,13 +679,6 @@ class HassleResolver {
     const modal = $('#modal');
     const self = this;
     modal.on('hidden.bs.modal', function () {
-      self.setEffortSpent(0);
-    });
-    modal.on('shown.bs.modal', function () {
-      document.getElementById('modal-close').focus();
-    });
-    const closeButton = document.getElementById('modal-close');
-    closeButton.addEventListener('click', function () {
       const submit = document.getElementById('submit');
       const reset = document.querySelector('#form button.reset-btn');
       if (submit.style.display !== 'none') {
@@ -682,6 +686,11 @@ class HassleResolver {
       } else {
         reset.focus();
       }
+      self.concludeRound();
+      self.setEffortSpent(0);
+    });
+    modal.on('shown.bs.modal', function () {
+      document.getElementById('modal-close').focus();
     });
   }
 
@@ -804,6 +813,8 @@ class HassleResolver {
   }
 
   handleReroll(die) {
+    this.resetConcludeRoundFlags();
+    this.setModalResetMode(false);
     const rerollIcon = this.getRerollIcon();
     die.after(rerollIcon);
     const newDie = this.getRandomDie();
@@ -813,6 +824,34 @@ class HassleResolver {
     dice.forEach(function (siblingDie) {
       siblingDie.classList.remove('winner');
     });
-    this.getWinningDie(dice);
+    this.getWinningElfDie();
+    this.getWinningHassleDie();
+    this.handleRollResults();
+  }
+
+  concludeRound() {
+    if (this.roundConclusion.reduceToughness) {
+      this.reduceToughness();
+    }
+    if (this.roundConclusion.removeHassle) {
+      this.removeHassle('first');
+    }
+    if (this.roundConclusion.hideSubmitButton) {
+      this.hideSubmitButton();
+    }
+    if (this.roundConclusion.advanceRound) {
+      this.advanceRound();
+    }
+
+    this.resetConcludeRoundFlags();
+  }
+
+  resetConcludeRoundFlags() {
+    this.roundConclusion = {
+      advanceRound: false,
+      hideSubmitButton: false,
+      reduceToughness: false,
+      removeHassle: false,
+    };
   }
 }
