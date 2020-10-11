@@ -283,6 +283,12 @@ body {
   margin-right: 5px;
 }
 
+.dice-container.can-reroll .die:not(.rerolled):hover {
+  cursor: pointer;
+  -webkit-animation: fa-spin 2s linear infinite;
+  animation: fa-spin 2s linear infinite;
+}
+
 .dice-container .winner {
   color: #000;
   font-size: 3em;
@@ -386,4 +392,10 @@ footer {
 #hassle-auto-reroll-container {
   clear: both;
   margin-top: 1rem;
+}
+
+#can-reroll-container {
+  left: 0;
+  margin-left: 1em;
+  position: absolute;
 }

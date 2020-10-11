@@ -16,6 +16,7 @@ class HassleResolver {
     this.prepareEffortSpendingAdvice();
     this.updateEffortSpendingAdvice();
     this.prepareAutoRerollSelectors();
+    this.prepareCanRerollToggler();
   }
 
   prepareAutoRerollSelectors() {
@@ -25,7 +26,7 @@ class HassleResolver {
       checkbox.addEventListener('change', function (event) {
         diceContainer.style.display = event.target.checked ? 'block' : 'none';
       });
-      const dice = diceContainer.querySelectorAll('i');
+      const dice = diceContainer.querySelectorAll('.die');
       dice.forEach(function (die) {
         die.addEventListener('click', function (event) {
           const dataset = event.target.dataset;
@@ -46,7 +47,7 @@ class HassleResolver {
     this.rollHassleDice(this.getCurrentHassle().fists, this.hassleDiceContainer);
     this.getHassleTotal();
     const isWin = this.elfTotal > this.hassleTotal;
-    const isMultiple = this.getIsMultipleHassle()
+    const isMultiple = this.getIsMultipleHassle();
     this.handleRollResults(isMultiple, isWin);
     this.showFormResetButton();
   }
@@ -106,8 +107,11 @@ class HassleResolver {
     const numberWord = number[0];
     const numberDigit = number[1];
     const die = document.createElement('i');
-    die.className = `fas fa-dice-${numberWord}`;
+    die.classList.add('fas');
+    die.classList.add(`fa-dice-${numberWord}`);
+    die.classList.add('die');
     die.setAttribute('data-value', numberDigit);
+    this.addRerollHandler(die);
     return die;
   }
 
@@ -129,7 +133,7 @@ class HassleResolver {
   }
 
   getWinningElfDie() {
-    const dice = document.getElementById('elf-dice-container').childNodes;
+    const dice = document.querySelectorAll('#elf-dice-container .die');
     this.elfRollResult = this.getWinningDie(dice);
   }
 
@@ -177,8 +181,7 @@ class HassleResolver {
   }
 
   markRerolled(die) {
-    die.className += ' rerolled';
-    die.dataset.rerolled = '1';
+    die.classList.add('rerolled');
   }
 
   getWinningDie(dice) {
@@ -190,46 +193,47 @@ class HassleResolver {
 
     // Find winning die
     let winningValue = null;
-    let die, value;
-    for (let n = 0; n < diceCount; n++) {
-      die = dice[n];
+    let value;
+    const self = this;
+    dice.forEach(function (die) {
       if (die.dataset.value === undefined) {
-        continue;
+        return;
       }
 
-      if (die.dataset.rerolled) {
-        continue;
+      if (die.classList.contains('rerolled')) {
+        return;
       }
+
       value = parseInt(die.dataset.value);
       if (winningValue === null) {
         winningValue = value;
-        continue;
+        return;
       }
 
-      if (this.getRatherLose()) {
+      if (self.getRatherLose()) {
         if (winningValue > value) {
           winningValue = value;
         }
       } else if (winningValue < value) {
         winningValue = value;
       }
-    }
+    });
 
     // Mark winning die
     let winningDieReached = false;
-    for (let n = 0; n < diceCount; n++) {
-      die = dice[n];
-      if (die.dataset.rerolled) {
-        continue;
+    dice.forEach(function (die) {
+      if (die.classList.contains('rerolled')) {
+        return;
       }
+
       value = parseInt(die.dataset.value);
       if (value === winningValue) {
         if (!winningDieReached) {
           winningDieReached = true;
-          die.className += ' winner';
+          die.classList.add('winner');
         }
       }
-    }
+    });
 
     return winningValue;
   }
@@ -516,12 +520,16 @@ class HassleResolver {
     let rollResults;
     let summary;
     let win;
+    const canReroll = this.canReroll();
     otherHassles.forEach(function (hassle) {
       // Create containers
       otherHassleKey = hassle.dataset.hassleKey;
       rollResults = document.createElement('div');
       rollResults.id = `additional-hassle-${otherHassleKey}-results`;
-      rollResults.className = 'dice-container';
+      rollResults.classList.add('dice-container');
+      if (canReroll) {
+        rollResults.classList.add('can-reroll');
+      }
       modalBody.appendChild(rollResults);
       summary = document.createElement('div');
       summary.id = `additional-hassle-${otherHassleKey}-summary`;
@@ -757,5 +765,54 @@ class HassleResolver {
       event.preventDefault();
       self.removeHassle('last');
     });
+  }
+
+  canReroll() {
+    return document.getElementById('can-reroll').checked;
+  }
+
+  handleCanRerollToggle() {
+    const diceContainers = document.querySelectorAll('.dice-container');
+    const canReroll = this.canReroll();
+    diceContainers.forEach(function (container) {
+      if (canReroll) {
+        container.classList.add('can-reroll');
+      } else {
+        container.classList.remove('can-reroll');
+      }
+    });
+  }
+
+  prepareCanRerollToggler() {
+    const toggler = document.getElementById('can-reroll');
+    const self = this;
+    toggler.addEventListener('change', function () {
+      self.handleCanRerollToggle();
+    });
+  }
+
+  addRerollHandler(die) {
+    const self = this;
+    die.addEventListener('click', function () {
+      const isRerolled = die.classList.contains('rerolled');
+      const canReroll = self.canReroll();
+      if (!canReroll || isRerolled) {
+        return;
+      }
+      self.handleReroll(die);
+    })
+  }
+
+  handleReroll(die) {
+    const rerollIcon = this.getRerollIcon();
+    die.after(rerollIcon);
+    const newDie = this.getRandomDie();
+    rerollIcon.after(newDie);
+    this.markRerolled(die);
+    const dice = die.parentNode.childNodes;
+    dice.forEach(function (siblingDie) {
+      siblingDie.classList.remove('winner');
+    });
+    this.getWinningDie(dice);
   }
 }
