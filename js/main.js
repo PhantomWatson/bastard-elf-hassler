@@ -45,20 +45,26 @@ class HassleResolver {
     this.getElfTotal();
     this.rollHassleDice(this.getCurrentHassle().fists, this.hassleDiceContainer);
     this.getHassleTotal();
-    if (this.elfTotal > this.hassleTotal) {
-      if (this.getIsMultipleHassle()) {
+    const isWin = this.elfTotal > this.hassleTotal;
+    const isMultiple = this.getIsMultipleHassle()
+    this.handleRollResults(isMultiple, isWin);
+    this.showFormResetButton();
+  }
+
+  handleRollResults(isMultiple, isWin) {
+    if (isWin) {
+      if (isMultiple) {
         this.handleMultipleHassleWin();
       } else {
         this.handleSingleHassleWin();
       }
     } else {
-      if (this.getIsMultipleHassle()) {
+      if (isMultiple) {
         this.handleMultipleHassleLoss();
       } else {
         this.handleSingleHassleLoss();
       }
     }
-    this.showFormResetButton();
   }
 
   validate() {
