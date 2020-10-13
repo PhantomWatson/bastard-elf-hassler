@@ -807,7 +807,7 @@ class HassleResolver {
         return;
       }
       self.handleReroll(die);
-    })
+    });
   }
 
   handleReroll(die) {
