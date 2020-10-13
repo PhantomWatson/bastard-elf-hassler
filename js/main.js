@@ -304,7 +304,6 @@ class HassleResolver {
     } else {
       if (this.getHassleCount() > 1) {
         this.roundConclusion.removeHassle = true;
-        this.hassleNum++;
       } else {
         this.roundConclusion.hideSubmitButton = true;
       }
@@ -398,7 +397,8 @@ class HassleResolver {
     this.clearDice();
     this.resetInputs();
     this.setModalResetMode(false);
-    this.advanceHassleNum();
+    this.hassleNum++;
+    this.resetFirstHassleNum();
     submitButton.style.display = 'inline';
     document.querySelector('#form button.reset-btn').style.display = 'none';
 
@@ -610,8 +610,7 @@ class HassleResolver {
     return document.getElementById('total-elan');
   }
 
-  advanceHassleNum() {
-    this.hassleNum++;
+  resetFirstHassleNum() {
     const hassle = document.querySelector('#hassle-set > .hassle:first-child');
     hassle.dataset.hassleKey = this.hassleNum;
     const difficulty = hassle.querySelector('.hassle-difficulty');
@@ -834,6 +833,7 @@ class HassleResolver {
     }
     if (this.roundConclusion.removeHassle) {
       this.removeHassle('first');
+      this.hassleNum++;
     }
     if (this.roundConclusion.hideSubmitButton) {
       this.hideSubmitButton();
