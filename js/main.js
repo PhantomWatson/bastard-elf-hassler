@@ -59,6 +59,7 @@ class HassleResolver {
     if (isWin) {
       if (isMultiple) {
         this.handleMultipleHassleWin();
+        this.hideAmbushes();
       } else {
         this.handleSingleHassleWin();
       }
@@ -314,7 +315,11 @@ class HassleResolver {
     this.roundConclusion.advanceRound = true;
     this.showMultipleHassleResults();
     if (this.getHassleCount() > 1) {
-      this.handleAmbushes();
+      if (this.hasAmbushes()) {
+        this.showAmbushes();
+      } else {
+        this.handleAmbushes();
+      }
     }
   }
 
@@ -532,13 +537,15 @@ class HassleResolver {
       rollResults = document.createElement('div');
       rollResults.id = `additional-hassle-${otherHassleKey}-results`;
       rollResults.classList.add('dice-container');
+      rollResults.classList.add('ambush');
       if (canReroll) {
         rollResults.classList.add('can-reroll');
       }
       modalBody.appendChild(rollResults);
       summary = document.createElement('div');
       summary.id = `additional-hassle-${otherHassleKey}-summary`;
-      summary.className = 'roll-summary'
+      summary.classList.add('roll-summary');
+      summary.classList.add('ambush');
       modalBody.appendChild(summary);
 
       // Roll dice and add them and the total score to the modal
@@ -845,5 +852,26 @@ class HassleResolver {
       reduceToughness: false,
       removeHassle: false,
     };
+  }
+
+  getAmbushes() {
+    const modal = document.getElementById('modal-body');
+    return modal.querySelectorAll('.ambush');
+  }
+
+  hideAmbushes() {
+    this.getAmbushes().forEach(function (element) {
+      element.style.display = 'none';
+    });
+  }
+
+  hasAmbushes() {
+    return this.getAmbushes().length > 0;
+  }
+
+  showAmbushes() {
+    this.getAmbushes().forEach(function (element) {
+      element.style.display = 'block';
+    });
   }
 }
