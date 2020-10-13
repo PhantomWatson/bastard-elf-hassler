@@ -92,8 +92,8 @@ class HassleResolver {
     }
     this.getWinningElfDie();
 
-    if (this.isUsingCat()) {
-      document.getElementById('familiar-cat').checked = false;
+    if (this.multiHassleRerollDisabled()) {
+      document.getElementById('disable-multi-hassle-reroll').checked = false;
     }
   }
 
@@ -639,15 +639,13 @@ class HassleResolver {
     guaranteedSuccess.innerText = '' + minEffortForGuaranteedSuccess;
   }
 
-  isUsingCat() {
-    const catField = document.getElementById('familiar-cat');
-
-    return catField.checked;
+  multiHassleRerollDisabled() {
+    return document.getElementById('disable-multi-hassle-reroll').checked;
   }
 
   getElfAutoRerollTargets() {
     const values = [];
-    if (!this.isUsingCat() && this.getIsMultipleHassle()) {
+    if (!this.multiHassleRerollDisabled() && this.getIsMultipleHassle()) {
       values.push('4', '5', '6');
     }
 
