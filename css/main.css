@@ -283,7 +283,7 @@ body {
   margin-right: 5px;
 }
 
-.dice-container.can-reroll .die:not(.rerolled):hover {
+.dice-container.can-reroll:not(.ambush) .die:not(.rerolled):hover {
   cursor: pointer;
   -webkit-animation: fa-spin 2s linear infinite;
   animation: fa-spin 2s linear infinite;

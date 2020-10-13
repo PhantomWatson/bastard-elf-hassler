@@ -530,7 +530,6 @@ class HassleResolver {
     let rollResults;
     let summary;
     let win;
-    const canReroll = this.canReroll();
     otherHassles.forEach(function (hassle) {
       // Create containers
       otherHassleKey = hassle.dataset.hassleKey;
@@ -538,9 +537,6 @@ class HassleResolver {
       rollResults.id = `additional-hassle-${otherHassleKey}-results`;
       rollResults.classList.add('dice-container');
       rollResults.classList.add('ambush');
-      if (canReroll) {
-        rollResults.classList.add('can-reroll');
-      }
       modalBody.appendChild(rollResults);
       summary = document.createElement('div');
       summary.id = `additional-hassle-${otherHassleKey}-summary`;
@@ -800,10 +796,11 @@ class HassleResolver {
 
   addRerollHandler(die) {
     const self = this;
-    die.addEventListener('click', function () {
+    die.addEventListener('click', function (event) {
       const isRerolled = die.classList.contains('rerolled');
       const canReroll = self.canReroll();
-      if (!canReroll || isRerolled) {
+      const isAmbush = event.target.parentElement.classList.contains('ambush');
+      if (!canReroll || isRerolled || isAmbush) {
         return;
       }
       self.handleReroll(die);
