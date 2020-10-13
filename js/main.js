@@ -91,10 +91,6 @@ class HassleResolver {
       }
     }
     this.getWinningElfDie();
-
-    if (this.multiHassleRerollDisabled()) {
-      document.getElementById('disable-multi-hassle-reroll').checked = false;
-    }
   }
 
   getRandomDie() {
