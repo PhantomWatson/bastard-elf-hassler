@@ -54,7 +54,6 @@ class HassleResolver {
   handleRollResults() {
     this.getElfTotal();
     this.getHassleTotal();
-    console.log(`totals are now ${this.elfTotal} vs. ${this.hassleTotal}`);
     const isWin = this.elfTotal > this.hassleTotal;
     const isMultiple = this.getIsMultipleHassle();
     if (isWin) {
@@ -248,7 +247,6 @@ class HassleResolver {
   }
 
   setRoundEndMessage() {
-    console.log('setRoundEndMessage');
     const elfRollResults = document.getElementById('elf-roll-results');
     const hassleRollResults = document.getElementById('hassle-roll-results');
     const rollSummary = document.getElementById('roll-summary');
