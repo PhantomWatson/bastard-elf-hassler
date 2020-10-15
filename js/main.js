@@ -2,6 +2,7 @@ class HassleResolver {
   constructor() {
     this.round = 1;
     this.hassleNum = 1;
+    this.roundWon = false;
     this.elfDiceContainer = document.getElementById('elf-dice-container');
     this.hassleDiceContainer = document.getElementById('hassle-dice-container');
     this.prepareFormSubmit();
@@ -56,9 +57,9 @@ class HassleResolver {
   handleRollResults() {
     this.getElfTotal();
     this.getHassleTotal();
-    const isWin = this.isWin();
+    this.roundWon = this.isWin();
     const isMultiple = this.getIsMultipleHassle();
-    if (isWin) {
+    if (this.roundWon) {
       if (isMultiple) {
         this.handleMultipleHassleWin();
         this.hideAmbushes();
@@ -256,7 +257,7 @@ class HassleResolver {
     const hassleName = this.getHassleName(this.hassleNum);
     elfRollResults.innerHTML = `Elf total: ${this.elfTotal}`;
     hassleRollResults.innerHTML = `Hassle total: ${this.hassleTotal}`;
-    const defeatedHassle = this.getToughness() === 1 && this.roundConclusion.reduceToughness;
+    const defeatedHassle = (this.getToughness() === 1 && this.roundConclusion.reduceToughness) || this.hasItem('tail');
 
     if (defeatedHassle) {
       rollSummary.innerHTML = `<span class="text-success">You've defeated ${hassleName}</span>`;
@@ -264,14 +265,13 @@ class HassleResolver {
         this.setModalResetMode(true);
       }
     } else {
-      let win = this.elfTotal > this.hassleTotal;
       rollSummary.innerHTML = (
-        win ?
+        this.roundWon ?
           `<span class="text-success">You win against against ${hassleName}!</span>` :
           `<span class="text-danger">You lose against ${hassleName} this round and suffer any resulting consequences.</span>`
       );
-      if (win) {
-        rollSummary.innerHTML += `<br />The toughness of ${hassleName} has been reduced to ${this.getToughness() - 1}`;
+      if (this.roundWon) {
+          rollSummary.innerHTML += `<br />The toughness of ${hassleName} has been reduced to ${this.getToughness() - 1}`;
       }
     }
   }
@@ -301,14 +301,15 @@ class HassleResolver {
   handleMultipleHassleWin() {
     this.roundConclusion.reduceToughness = true;
     this.showMultipleHassleResults();
-    if (this.getToughness() > 1) {
-      this.roundConclusion.advanceRound = true;
-    } else {
+    const hassleIsDefeated = this.getToughness() === 1 || this.hasItem('tail');
+    if (hassleIsDefeated) {
       if (this.getHassleCount() > 1) {
         this.roundConclusion.removeHassle = true;
       } else {
         this.roundConclusion.hideSubmitButton = true;
       }
+    } else {
+      this.roundConclusion.advanceRound = true;
     }
   }
 
@@ -332,7 +333,8 @@ class HassleResolver {
   handleSingleHassleWin() {
     this.roundConclusion.reduceToughness = true;
     this.showSingleHassleResults();
-    if (this.getToughness() === 1) {
+    const hassleIsDefeated = this.getToughness() === 1 || this.hasItem('tail');
+    if (hassleIsDefeated) {
       this.roundConclusion.hideSubmitButton = true;
     } else {
       this.roundConclusion.advanceRound = true;
@@ -341,11 +343,13 @@ class HassleResolver {
 
   advanceRound() {
     this.round++;
+    this.roundWon = false;
     this.updateRoundDisplay();
   }
 
   resetRound() {
     this.round = 1;
+    this.roundWon = false;
     this.updateRoundDisplay();
   }
 
