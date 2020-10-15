@@ -112,6 +112,48 @@
                 </small>
               </div>
             </div>
+
+            <div id="items">
+              <strong>
+                Usable items
+              </strong>
+              <div class="row">
+                <div class="form-group form-check col-6">
+                  <input class="form-check-input" type="checkbox" value="1" id="item-cat">
+                  <label class="form-check-label" for="item-cat">
+                    Familiar Cat
+                  </label>
+                </div>
+                <div class="form-group form-check col-6">
+                  <input class="form-check-input" type="checkbox" value="1" id="item-heroic-sword">
+                  <label class="form-check-label" for="item-heroic-sword">
+                    Heroic Sword
+                  </label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group form-check col-6">
+                  <input class="form-check-input" type="checkbox" value="1" id="item-ink">
+                  <label class="form-check-label" for="item-ink">
+                    Ink Pouch
+                  </label>
+                </div>
+                <div class="form-group form-check col-6">
+                  <input class="form-check-input" type="checkbox" value="1" id="item-tail">
+                  <label class="form-check-label" for="item-tail">
+                    Manticore Tail
+                  </label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group form-check col-6">
+                  <input class="form-check-input" type="checkbox" value="1" id="item-troupe">
+                  <label class="form-check-label" for="item-troupe">
+                    Dwarfen Troupe
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -125,16 +167,17 @@
               <label class="form-check-label" for="multiple-hassle">
                 This is a multiple hassle
               </label>
-                <small class="form-text text-muted multiple-only" id="multiple-hassle-notes">
-                  Any of the Elf's dice that land on 4+ will be <span class="rerolled">re-rolled</span>,
-                  and losing may result in multiple <strong>consequences</strong>. Add hassles in the order you
-                  want to fight them.
-                  <br />
+              <small class="form-text text-muted multiple-only" id="multiple-hassle-notes">
+                Any of the Elf's dice that land on 4+ will be <span class="rerolled">re-rolled</span>,
+                and losing may result in multiple <strong>consequences</strong>. Add hassles in the order you
+                want to fight them.
+                <div id="multiple-hassle-reroll-toggler">
                   <input type="checkbox" class="form-check-input" id="disable-multi-hassle-reroll" value="1">
                   <label class="form-check-label" for="disable-multi-hassle-reroll">
                     I'm using the Familiar Cat or the Heroic Sword in this round
                   </label>
-                </small>
+                </div>
+              </small>
             </div>
             <div id="hassle-set">
               <div class="hassle" data-hassle-key="1">

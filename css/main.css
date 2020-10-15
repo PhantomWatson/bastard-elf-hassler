@@ -399,3 +399,11 @@ footer {
   margin-left: 1em;
   position: absolute;
 }
+
+#items .row {
+  margin-left: 0;
+}
+
+#items .form-group {
+  margin-bottom: 0.25rem;
+}

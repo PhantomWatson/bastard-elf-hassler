@@ -17,6 +17,8 @@ class HassleResolver {
     this.updateEffortSpendingAdvice();
     this.prepareAutoRerollSelectors();
     this.prepareCanRerollToggler();
+    this.prepareMultipleHassleRerollDisabler();
+    this.toggleMultipleHassleRerollVisibility();
 
     // Flags for indicating what actions to take when concluding this round
     this.resetConcludeRoundFlags();
@@ -54,7 +56,7 @@ class HassleResolver {
   handleRollResults() {
     this.getElfTotal();
     this.getHassleTotal();
-    const isWin = this.elfTotal > this.hassleTotal;
+    const isWin = this.isWin();
     const isMultiple = this.getIsMultipleHassle();
     if (isWin) {
       if (isMultiple) {
@@ -870,5 +872,67 @@ class HassleResolver {
     this.getAmbushes().forEach(function (element) {
       element.style.display = 'block';
     });
+  }
+
+  hasItem(item) {
+    switch (item) {
+      // Familiar Cat
+      case 'cat':
+        return document.getElementById('item-cat').checked;
+
+      // Heroic Sword
+      case 'sword':
+        return document.getElementById('item-heroic-sword').checked;
+
+      // Ink Pouch
+      case 'ink':
+        return document.getElementById('item-ink').checked;
+
+      // Manticore Tail
+      case 'tail':
+        return document.getElementById('item-tail').checked;
+
+      // Dwarfen Troupe
+      case 'troupe':
+        return document.getElementById('item-troupe').checked;
+    }
+
+    console.log('Invalid item name: ' + item);
+
+    return false;
+  }
+
+  prepareMultipleHassleRerollDisabler() {
+    const checkboxes = document.querySelectorAll('#item-cat, #item-heroic-sword');
+    const self = this;
+    checkboxes.forEach(function (checkbox) {
+      checkbox.addEventListener('change', function (event) {
+        self.toggleMultipleHassleRerollVisibility();
+      });
+    });
+  }
+
+  toggleMultipleHassleRerollVisibility() {
+    const multiHassleRerollToggler = document.getElementById('multiple-hassle-reroll-toggler');
+    const hasItem = this.hasItem('cat') || this.hasItem('sword');
+    multiHassleRerollToggler.style.display = hasItem ? 'block' : 'none';
+    if (!hasItem) {
+      document.getElementById('disable-multi-hassle-reroll').checked = false;
+    }
+  }
+
+  isWin() {
+    if (this.elfTotal > this.hassleTotal) {
+      return true;
+    }
+
+    if (this.elfTotal === this.hassleTotal && this.hasItem('ink')) {
+      if (confirm('You\'ve tied! Use Ink Pouch to win round?')) {
+        document.getElementById('item-ink').checked = false;
+        return true;
+      }
+    }
+
+    return false;
   }
 }
