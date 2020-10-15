@@ -94,7 +94,9 @@ class HassleResolver {
       }
     }
     this.getWinningElfDie();
+    this.checkForTailDeath();
   }
+
 
   getRandomDie() {
     const numbers = [
@@ -828,6 +830,7 @@ class HassleResolver {
     this.getWinningElfDie();
     this.getWinningHassleDie();
     this.handleRollResults();
+    this.checkForTailDeath();
   }
 
   concludeRound() {
@@ -938,5 +941,33 @@ class HassleResolver {
     }
 
     return false;
+  }
+
+  checkForTailDeath() {
+    if (!this.hasItem('tail')) {
+      return;
+    }
+
+    const dice = document.querySelectorAll('#elf-dice-container .die');
+    let oneResultCount = 0;
+    let value;
+    dice.forEach(function (die) {
+      if (die.dataset.value === undefined) {
+        return;
+      }
+
+      if (die.classList.contains('rerolled')) {
+        return;
+      }
+
+      value = parseInt(die.dataset.value);
+      if (value === 1) {
+        oneResultCount++;
+      }
+    });
+
+    if (oneResultCount > 1) {
+      alert('Bad news. You botch your attack roll and accidentally kill yourself with your Manticore Tail. :(')
+    }
   }
 }
