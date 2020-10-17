@@ -40,7 +40,7 @@
               The Bastard Elf
             </h2>
             <div class="form-group form-check">
-              <input class="form-check-input" type="checkbox" value="1" id="rather-win" checked="checked">
+              <input class="form-check-input" type="checkbox" value="1" id="rather-win" checked="checked" />
               <label class="form-check-label" for="rather-win">
                 I'm trying to win this fight
               </label>
@@ -94,7 +94,7 @@
             </ul>
 
             <div class="form-group form-check">
-              <input class="form-check-input" type="checkbox" value="1" id="elf-auto-reroll">
+              <input class="form-check-input" type="checkbox" value="1" id="elf-auto-reroll" />
               <label class="form-check-label" for="elf-auto-reroll">
                 Automatically re-roll...
               </label>
@@ -105,11 +105,10 @@
                 <i class="fas fa-dice-four die" data-value="4" data-selected="0"></i>
                 <i class="fas fa-dice-five die" data-value="5" data-selected="0"></i>
                 <i class="fas fa-dice-six die" data-value="6" data-selected="0"></i>
-                <br />
-                <small class="form-text text-muted">
+                <p class="form-text text-muted">
                   The selected dice will automatically be <span class="rerolled">re-rolled</span> once (doesn't stack with re-rolls due to being in
                   a multiple hassle)
-                </small>
+                </p>
               </div>
             </div>
 
@@ -119,13 +118,13 @@
               </strong>
               <div class="row">
                 <div class="form-group form-check col-6">
-                  <input class="form-check-input" type="checkbox" value="1" id="item-cat">
+                  <input class="form-check-input" type="checkbox" value="1" id="item-cat" />
                   <label class="form-check-label" for="item-cat">
                     Familiar Cat
                   </label>
                 </div>
                 <div class="form-group form-check col-6">
-                  <input class="form-check-input" type="checkbox" value="1" id="item-heroic-sword">
+                  <input class="form-check-input" type="checkbox" value="1" id="item-heroic-sword" />
                   <label class="form-check-label" for="item-heroic-sword">
                     Heroic Sword (equipped)
                   </label>
@@ -133,13 +132,13 @@
               </div>
               <div class="row">
                 <div class="form-group form-check col-6">
-                  <input class="form-check-input" type="checkbox" value="1" id="item-ink">
+                  <input class="form-check-input" type="checkbox" value="1" id="item-ink" />
                   <label class="form-check-label" for="item-ink">
                     Ink Pouch
                   </label>
                 </div>
                 <div class="form-group form-check col-6">
-                  <input class="form-check-input" type="checkbox" value="1" id="item-tail">
+                  <input class="form-check-input" type="checkbox" value="1" id="item-tail" />
                   <label class="form-check-label" for="item-tail">
                     Manticore Tail (equipped)
                   </label>
@@ -147,7 +146,7 @@
               </div>
               <div class="row">
                 <div class="form-group form-check col-6">
-                  <input class="form-check-input" type="checkbox" value="1" id="item-troupe">
+                  <input class="form-check-input" type="checkbox" value="1" id="item-troupe" />
                   <label class="form-check-label" for="item-troupe">
                     Dwarfen Troupe
                   </label>
@@ -163,31 +162,31 @@
               The Hassle
             </h2>
             <div class="form-group form-check">
-              <input type="checkbox" class="form-check-input" id="multiple-hassle" value="1">
+              <input type="checkbox" class="form-check-input" id="multiple-hassle" value="1" />
               <label class="form-check-label" for="multiple-hassle">
                 This is a multiple hassle
               </label>
-              <small class="form-text text-muted multiple-only" id="multiple-hassle-notes">
+              <div class="form-text text-muted multiple-only" id="multiple-hassle-notes">
                 Any of the Elf's dice that land on 4+ will be <span class="rerolled">re-rolled</span>,
                 and losing may result in multiple <strong>consequences</strong>. Add hassles in the order you
                 want to fight them.
                 <div id="multiple-hassle-reroll-toggler">
-                  <input type="checkbox" class="form-check-input" id="disable-multi-hassle-reroll" value="1">
+                  <input type="checkbox" class="form-check-input" id="disable-multi-hassle-reroll" value="1" />
                   <label class="form-check-label" for="disable-multi-hassle-reroll">
                     I'm using the Familiar Cat or the Heroic Sword in this round
                   </label>
                 </div>
-              </small>
+              </div>
             </div>
             <div class="form-group form-check" id="is-musical-container">
-              <input class="form-check-input" type="checkbox" value="1" id="is-musical">
+              <input class="form-check-input" type="checkbox" value="1" id="is-musical" />
               <label class="form-check-label" for="is-musical">
                 This is a musical hassle
               </label>
-              <small class="form-text text-muted">
+              <p class="form-text text-muted">
                 Your Dwarfen Troupe will reroll <span class="troupe">a special die</span> if it lands on 5 or 6 and add
                 the second value to your total.
-              </small>
+              </p>
             </div>
             <div id="hassle-set">
               <div class="hassle" data-hassle-key="1">
@@ -238,7 +237,7 @@
             </button>
 
             <div class="form-group form-check" id="hassle-auto-reroll-container">
-              <input class="form-check-input" type="checkbox" value="1" id="hassle-auto-reroll">
+              <input class="form-check-input" type="checkbox" value="1" id="hassle-auto-reroll" />
               <label class="form-check-label" for="hassle-auto-reroll">
                 Automatically re-roll...
               </label>
@@ -249,10 +248,9 @@
                 <i class="fas fa-dice-four die" data-value="4" data-selected="0"></i>
                 <i class="fas fa-dice-five die" data-value="5" data-selected="0"></i>
                 <i class="fas fa-dice-six die" data-value="6" data-selected="0"></i>
-                <br />
-                <small class="form-text text-muted">
+                <p class="form-text text-muted">
                   The selected dice will automatically be <span class="rerolled">re-rolled</span> once
-                </small>
+                </p>
               </div>
             </div>
 
@@ -289,7 +287,7 @@
         </div>
         <div class="modal-footer">
           <div class="form-group form-check" id="can-reroll-container">
-            <input class="form-check-input" type="checkbox" value="1" id="can-reroll">
+            <input class="form-check-input" type="checkbox" value="1" id="can-reroll" />
             <label class="form-check-label" for="can-reroll">
               I can re-roll dice
             </label>

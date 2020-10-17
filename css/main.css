@@ -430,3 +430,8 @@ footer {
   color: #007bff;
   font-weight: bold;
 }
+
+p.text-muted,
+div.text-muted {
+  font-size: 80%;
+}
