@@ -653,26 +653,32 @@ class HassleResolver {
       values.push('4', '5', '6');
     }
 
-    const selectedDice = document.querySelectorAll('#elf-reroll-options i[data-selected="1"]');
-    selectedDice.forEach(function (die) {
-      const value = die.dataset.value;
-      if (values.indexOf(value) === -1) {
-        values.push(value);
-      }
-    });
+    const checkbox = document.getElementById('elf-auto-reroll');
+    if (checkbox.checked) {
+      const selectedDice = document.querySelectorAll('#elf-reroll-options i[data-selected="1"]');
+      selectedDice.forEach(function (die) {
+        const value = die.dataset.value;
+        if (values.indexOf(value) === -1) {
+          values.push(value);
+        }
+      });
+    }
 
     return values;
   }
 
   getHassleAutoRerollTargets() {
     const values = [];
-    const selectedDice = document.querySelectorAll('#hassle-reroll-options i[data-selected="1"]');
-    selectedDice.forEach(function (die) {
-      const value = die.dataset.value;
-      if (values.indexOf(value) === -1) {
-        values.push(value);
-      }
-    });
+    const checkbox = document.getElementById('hassle-auto-reroll');
+    if (checkbox.checked) {
+      const selectedDice = document.querySelectorAll('#hassle-reroll-options i[data-selected="1"]');
+      selectedDice.forEach(function (die) {
+        const value = die.dataset.value;
+        if (values.indexOf(value) === -1) {
+          values.push(value);
+        }
+      });
+    }
 
     return values;
   }
