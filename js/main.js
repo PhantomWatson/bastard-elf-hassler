@@ -20,6 +20,7 @@ class HassleResolver {
     this.prepareCanRerollToggler();
     this.prepareMultipleHassleRerollDisabler();
     this.toggleMultipleHassleRerollVisibility();
+    this.prepareIsMusicalToggler();
 
     // Flags for indicating what actions to take when concluding this round
     this.resetConcludeRoundFlags();
@@ -37,7 +38,7 @@ class HassleResolver {
         die.addEventListener('click', function (event) {
           const dataset = event.target.dataset;
           dataset.selected = dataset.selected === '1' ? '0' : '1';
-        })
+        });
       });
     });
   }
@@ -85,14 +86,16 @@ class HassleResolver {
     const autoRerollTargets = this.getElfAutoRerollTargets();
     for (let n = 0; n < this.getElfFists(); n++) {
       die = this.getRandomDie();
+      if (n === 0 && this.usingTroupe()) {
+        this.markTroupeDie(die);
+      }
       this.elfDiceContainer.appendChild(die);
       needsRerolled = autoRerollTargets.indexOf(die.dataset.value) !== -1;
       if (needsRerolled) {
-        this.markRerolled(die);
-        this.elfDiceContainer.appendChild(this.getRerollIcon());
-        this.elfDiceContainer.appendChild(this.getRandomDie());
+        this.autoReroll(die, this.elfDiceContainer);
       }
     }
+    this.handleDwarfenTroupe();
     this.getWinningElfDie();
     this.checkForTailDeath();
   }
@@ -129,16 +132,14 @@ class HassleResolver {
       container.appendChild(die);
       needsRerolled = autoRerollTargets.indexOf(die.dataset.value) !== -1;
       if (needsRerolled) {
-        this.markRerolled(die);
-        container.appendChild(this.getRerollIcon());
-        container.appendChild(this.getRandomDie());
+        this.autoReroll(die, container);
       }
     }
     this.getWinningHassleDie();
   }
 
   getWinningElfDie() {
-    const dice = document.querySelectorAll('#elf-dice-container .die');
+    const dice = this.elfDiceContainer.querySelectorAll('.die');
     this.elfRollResult = this.getWinningDie(dice);
   }
 
@@ -180,13 +181,14 @@ class HassleResolver {
   }
 
   getRerollIcon() {
-    let rerollIcon = document.createElement('i');
-    rerollIcon.className = 'fas fa-arrow-right';
-    return rerollIcon;
+    let icon = document.createElement('i');
+    icon.className = 'fas fa-arrow-right';
+    return icon;
   }
 
   markRerolled(die) {
     die.classList.add('rerolled');
+    die.classList.remove('troupe');
   }
 
   getWinningDie(dice) {
@@ -196,49 +198,59 @@ class HassleResolver {
       return 0;
     }
 
-    // Find winning die
     let winningValue = null;
-    let value;
-    const self = this;
-    dice.forEach(function (die) {
-      if (die.dataset.value === undefined) {
-        return;
-      }
 
-      if (die.classList.contains('rerolled')) {
-        return;
-      }
+    // Find winning die using Dwarfen Troupe dice
+    const isElfDice = dice[0].parentNode.id === 'elf-dice-container';
+    const troupeAdditionDie = this.elfDiceContainer.querySelector('.troupe-addition');
+    if (isElfDice && troupeAdditionDie) {
+      const troupeDie = this.elfDiceContainer.querySelector('.troupe');
+      troupeDie.classList.add('winner');
+      troupeAdditionDie.classList.add('winner');
+      winningValue = parseInt(troupeDie.dataset.value) + parseInt(troupeAdditionDie.dataset.value);
 
-      value = parseInt(die.dataset.value);
-      if (winningValue === null) {
-        winningValue = value;
-        return;
-      }
+    // Find normal winning die
+    } else {
+      let value;
+      const self = this;
+      dice.forEach(function (die) {
+        const noValue = die.dataset.value === undefined;
+        const isRerolled = die.classList.contains('rerolled');
+        if (noValue || isRerolled) {
+          return;
+        }
 
-      if (self.getRatherLose()) {
-        if (winningValue > value) {
+        value = parseInt(die.dataset.value);
+        if (winningValue === null) {
+          winningValue = value;
+          return;
+        }
+
+        if (self.getRatherLose()) {
+          if (winningValue > value) {
+            winningValue = value;
+          }
+        } else if (winningValue < value) {
           winningValue = value;
         }
-      } else if (winningValue < value) {
-        winningValue = value;
-      }
-    });
+      });
 
-    // Mark winning die
-    let winningDieReached = false;
-    dice.forEach(function (die) {
-      if (die.classList.contains('rerolled')) {
-        return;
-      }
-
-      value = parseInt(die.dataset.value);
-      if (value === winningValue) {
-        if (!winningDieReached) {
-          winningDieReached = true;
-          die.classList.add('winner');
+      // Mark winning die
+      let winningDieReached = false;
+      dice.forEach(function (die) {
+        if (die.classList.contains('rerolled')) {
+          return;
         }
-      }
-    });
+
+        value = parseInt(die.dataset.value);
+        if (value === winningValue) {
+          if (!winningDieReached) {
+            winningDieReached = true;
+            die.classList.add('winner');
+          }
+        }
+      });
+    }
 
     return winningValue;
   }
@@ -814,25 +826,39 @@ class HassleResolver {
       const isRerolled = die.classList.contains('rerolled');
       const canReroll = self.canReroll();
       const isAmbush = event.target.parentElement.classList.contains('ambush');
-      if (!canReroll || isRerolled || isAmbush) {
+      const isTroupeAddition = die.classList.contains('troupe-addition');
+      if (!canReroll || isRerolled || isAmbush || isTroupeAddition) {
         return;
       }
-      self.handleReroll(die);
+      self.handleManualReroll(die);
     });
   }
 
-  handleReroll(die) {
+  handleManualReroll(oldDie) {
     this.resetConcludeRoundFlags();
     this.setModalResetMode(false);
+
     const rerollIcon = this.getRerollIcon();
-    die.after(rerollIcon);
+    oldDie.after(rerollIcon);
+
     const newDie = this.getRandomDie();
+    const rerollingTroupeDie = this.isTroupeDie(oldDie);
+    if (rerollingTroupeDie) {
+      this.markTroupeDie(newDie);
+    }
+    if (this.isTroupeAdditionDie(oldDie)) {
+      this.markTroupeAdditionDie(newDie);
+    }
     rerollIcon.after(newDie);
-    this.markRerolled(die);
-    const dice = die.parentNode.childNodes;
+
+    this.markRerolled(oldDie);
+    const dice = oldDie.parentNode.childNodes;
     dice.forEach(function (siblingDie) {
       siblingDie.classList.remove('winner');
     });
+    if (rerollingTroupeDie) {
+      this.handleDwarfenTroupe();
+    }
     this.getWinningElfDie();
     this.getWinningHassleDie();
     this.handleRollResults();
@@ -954,7 +980,7 @@ class HassleResolver {
       return;
     }
 
-    const dice = document.querySelectorAll('#elf-dice-container .die');
+    const dice = this.elfDiceContainer.querySelectorAll('.die');
     let oneResultCount = 0;
     let value;
     dice.forEach(function (die) {
@@ -975,5 +1001,84 @@ class HassleResolver {
     if (oneResultCount > 1) {
       alert('Bad news. You botch your attack roll and accidentally kill yourself with your Manticore Tail. :(')
     }
+  }
+
+  prepareIsMusicalToggler() {
+    const troupeCheckbox = document.getElementById('item-troupe');
+    const container = document.getElementById('is-musical-container');
+    troupeCheckbox.addEventListener('change', function (event) {
+      container.style.display = event.target.checked ? 'block' : 'none';
+    });
+
+    const musicalCheckbox = document.getElementById('is-musical');
+    musicalCheckbox.addEventListener('change', function (event) {
+      const note = container.querySelector('.form-text');
+      note.style.display = event.target.checked ? 'block' : 'none';
+    });
+  }
+
+  usingTroupe() {
+    const troupeCheckbox = document.getElementById('item-troupe');
+    const musicalCheckbox = document.getElementById('is-musical');
+
+    return troupeCheckbox.checked && musicalCheckbox.checked;
+  }
+
+  autoReroll(die, container) {
+    const isTroupe = this.isTroupeDie(die);
+    this.markRerolled(die);
+
+    container.appendChild(this.getRerollIcon());
+
+    const newDie = this.getRandomDie();
+    if (isTroupe) {
+      this.markTroupeDie(newDie);
+    }
+    container.appendChild(newDie);
+  }
+
+  markTroupeDie(newDie) {
+    newDie.classList.add('troupe');
+  }
+
+  isTroupeDie(die) {
+    return die.classList.contains('troupe');
+  }
+
+  handleDwarfenTroupe() {
+    if (!this.usingTroupe()) {
+      return;
+    }
+
+    const remove = this.elfDiceContainer.querySelectorAll('.troupe-addition, .fa-plus');
+    remove.forEach(function (element) {
+      element.remove();
+    });
+
+    const troupeDie = this.elfDiceContainer.querySelector('.troupe');
+    if (troupeDie.dataset.value < 5) {
+      return;
+    }
+
+    const icon = this.getAdditionIcon();
+    troupeDie.after(icon);
+
+    const additionalDie = this.getRandomDie();
+    additionalDie.classList.add('troupe-addition');
+    icon.after(additionalDie);
+  }
+
+  getAdditionIcon() {
+    let icon = document.createElement('i');
+    icon.className = 'fas fa-plus';
+    return icon;
+  }
+
+  isTroupeAdditionDie(die) {
+    return die.classList.contains('troupe-addition');
+  }
+
+  markTroupeAdditionDie(die) {
+    die.classList.add('troupe-addition');
   }
 }

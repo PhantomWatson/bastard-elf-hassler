@@ -283,7 +283,7 @@ body {
   margin-right: 5px;
 }
 
-.dice-container.can-reroll:not(.ambush) .die:not(.rerolled):hover {
+.dice-container.can-reroll:not(.ambush) .die:not(.rerolled):not(.troupe-addition):hover {
   cursor: pointer;
   -webkit-animation: fa-spin 2s linear infinite;
   animation: fa-spin 2s linear infinite;
@@ -294,18 +294,28 @@ body {
   font-size: 3em;
 }
 
+.form-text > .rerolled {
+  font-weight: bold;
+}
+
 .rerolled,
 .dice-container .rerolled {
   color: #ff0000;
 }
 
-.dice-container .fa-arrow-right {
+.dice-container .fa-arrow-right,
+.dice-container .fa-plus {
   margin-left: -0.5em;
   margin-right: -5px;
   font-size: 1.5em;
   color: #fff;
   position: relative;
   text-shadow: 2px 2px 2px #000;
+}
+
+.dice-container .troupe,
+.dice-container .troupe-addition {
+  color: #007bff;
 }
 
 .reset-btn {
@@ -406,4 +416,17 @@ footer {
 
 #items .form-group {
   margin-bottom: 0.25rem;
+}
+
+#is-musical-container {
+  display: none;
+}
+
+#is-musical-container .form-text {
+  display: none;
+}
+
+#is-musical-container .troupe {
+  color: #007bff;
+  font-weight: bold;
 }
