@@ -70,6 +70,10 @@
                 <label for="effort-spent">
                   Effort to spend this round:
                   <span class="badge badge-pill badge-primary" id="effort-spent-selected">0</span>
+                  <br />
+                  <p class="text-muted">
+                    (effort spent can't exceed current &eacute;lan)
+                  </p>
                 </label>
                 <input type="range" class="form-control-range" id="effort-spent" aria-describedby="effort-spent-help" min="0" max="20" value="0" />
                 <div>
@@ -77,25 +81,37 @@
                   <span class="badge badge-pill badge-secondary float-right" id="effort-spendable-max">20</span>
                 </div>
               </div>
+              <div class="col-12">
+
+              </div>
             </div>
 
-            <ul>
-              <li>
-                Minimum effort for success to be possible:
-                <span id="effort-for-possible-success"></span>
-              </li>
-              <li>
-                Minimum effort for success to be likely:
-                <span id="effort-for-likely-success"></span>
-              </li>
-              <li>
-                Effort needed to guarantee success:
-                <span id="effort-to-guarantee-success"></span>
-              </li>
-              <li>
-                Effort spent can't exceed current &eacute;lan
-              </li>
-            </ul>
+            <table class="table">
+              <tr>
+                <td>
+                  Min effort for success:
+                </td>
+                <td>
+                  <span id="effort-for-possible-success"></span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Min effort for <em>likely</em> success:
+                </td>
+                <td>
+                  <span id="effort-for-likely-success"></span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Min effort for <em>guaranteed</em> success:
+                </td>
+                <td>
+                  <span id="effort-to-guarantee-success"></span>
+                </td>
+              </tr>
+            </table>
 
             <div class="form-group form-check">
               <input class="form-check-input" type="checkbox" value="1" id="elf-auto-reroll" />
