@@ -110,7 +110,7 @@ class HassleResolver {
       ['five', 5],
       ['six', 6],
     ];
-    const key = Math.floor(Math.random() * 6);
+    const key = this.getRollValue();
     const number = numbers[key];
     const numberWord = number[0];
     const numberDigit = number[1];
@@ -121,6 +121,10 @@ class HassleResolver {
     die.setAttribute('data-value', numberDigit);
     this.addRerollHandler(die);
     return die;
+  }
+
+  getRollValue() {
+    return Math.floor(Math.random() * 6) + 1;
   }
 
   rollHassleDice(fists, container) {
@@ -642,6 +646,7 @@ class HassleResolver {
 
   updateEffortSpendingAdvice() {
     const possibleSuccess = document.getElementById('effort-for-possible-success');
+    const likelySuccess = document.getElementById('effort-for-likely-success');
     const guaranteedSuccess = document.getElementById('effort-to-guarantee-success');
     const hassle = this.getCurrentHassle();
     const minHassleTotal = hassle.difficulty + (hassle.fists === 0 ? 0 : 1);
@@ -651,8 +656,40 @@ class HassleResolver {
     const minEffortForPossibleSuccess = Math.max(minHassleTotal - maxElfRoll + 1, 0);
     const minEffortForGuaranteedSuccess = Math.max(maxHassleTotal - minElfRoll + 1, 0);
 
+    let averageElfRoll = this.averageHighestRoll(this.getElfFists());
+    let averageHassleRoll = this.averageHighestRoll(hassle.fists);
+    const minEffortForLikelySuccess = Math.ceil(
+      Math.max(averageHassleRoll + hassle.difficulty - averageElfRoll, 0)
+    );
+
     possibleSuccess.innerText = '' + minEffortForPossibleSuccess;
+    likelySuccess.innerText = '' + minEffortForLikelySuccess;
     guaranteedSuccess.innerText = '' + minEffortForGuaranteedSuccess;
+  }
+
+  /**
+   * Easier to brute-force this number than to ACTUALLY REMEMBER HOW TO DO STATISTICAL MATH
+   *
+   * @param {integer} fists
+   * @returns {number}
+   */
+  averageHighestRoll(fists) {
+    if (fists == 0) {
+      return 0;
+    }
+    if (fists == 1) {
+      return 3.5;
+    }
+    const iterations = 1000;
+    let sum = 0;
+    for (let n = 1; n <= iterations; n++) {
+      let rolls = [];
+      for (let k = 1; k <= fists; k++) {
+        rolls.push(this.getRollValue());
+      }
+      sum += Math.max(...rolls);
+    }
+    return sum / iterations;
   }
 
   multiHassleRerollDisabled() {
@@ -762,7 +799,7 @@ class HassleResolver {
 
   prepareEffortSpendingAdvice() {
     const self = this;
-    const hassleRollModifiers = document.querySelectorAll('.hassle-difficulty, .hassle-fists');
+    const hassleRollModifiers = document.querySelectorAll('.hassle-difficulty, .hassle-fists, #elf-fist-count');
     hassleRollModifiers.forEach(function (input) {
       input.addEventListener('change', function () {
         self.updateEffortSpendingAdvice();
