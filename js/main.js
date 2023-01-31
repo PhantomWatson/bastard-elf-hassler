@@ -110,7 +110,7 @@ class HassleResolver {
       ['five', 5],
       ['six', 6],
     ];
-    const key = this.getRollValue();
+    const key = this.getRollValue() - 1;
     const number = numbers[key];
     const numberWord = number[0];
     const numberDigit = number[1];
